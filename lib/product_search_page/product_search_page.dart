@@ -22,10 +22,20 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: TextField(
-              controller: _searchFieldController,
-              decoration: const InputDecoration(hintText: 'Search'),
-              onChanged: (value) => _updateSearch()
+            child: Row(
+              children: <Widget>[
+                IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => Navigator.of(context).pop()),
+
+                const SizedBox(width: 16.0),
+
+                Expanded(
+                  child: TextField(
+                    controller: _searchFieldController,
+                    decoration: const InputDecoration(hintText: 'Search'),
+                    onChanged: (value) => _updateSearch()
+                  ),
+                )
+              ]
             )
           ),
 
