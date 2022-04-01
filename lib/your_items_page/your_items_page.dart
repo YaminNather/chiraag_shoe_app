@@ -1,21 +1,22 @@
-import 'package:chiraag_shoe_app/product_page/product_page.dart';
 import 'package:flutter/material.dart';
 
-class CurrentBidsPage extends StatefulWidget {
-  const CurrentBidsPage({ Key? key }) : super(key: key);
+import '../product_page/product_page.dart';
+
+class YourItemsPage extends StatefulWidget {
+  const YourItemsPage({ Key? key }) : super(key: key);
 
   @override
-  State<CurrentBidsPage> createState() => _CurrentBidsPageState();
+  State<YourItemsPage> createState() => _YourItemsPageState();
 }
 
-class _CurrentBidsPageState extends State<CurrentBidsPage> {
+class _YourItemsPageState extends State<YourItemsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: _buildAppBar(), body: _buildBody());
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(title: const Text('Current Bids'));
+    return AppBar(title: const Text('Your Items'));
   }
 
   Widget _buildBody() {
@@ -56,7 +57,7 @@ class _CurrentBidsPageState extends State<CurrentBidsPage> {
     return _buildItem(
       bidStatus: RichText(
         text: TextSpan(
-          text: 'Current Bid: ', 
+          text: 'Highest Bid: ', 
           children: <TextSpan>[
             TextSpan(text: 'Rs 32,000', style: theme.textTheme.headline6!.copyWith(color: Colors.green))
           ]

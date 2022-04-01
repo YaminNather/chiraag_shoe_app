@@ -1,4 +1,6 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
+import 'package:chiraag_shoe_app/current_bids_page/current_bids_page.dart';
+import 'package:chiraag_shoe_app/your_items_page/your_items_page.dart';
 import 'package:chiraag_shoe_app/product_page/product_page.dart';
 import 'package:chiraag_shoe_app/product_search_page/product_search_page.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: _buildAppBar(), body: _buildBody());
+    return Scaffold(appBar: _buildAppBar(), drawer: _buildDrawer(), body: _buildBody());
   }
 
   PreferredSizeWidget _buildAppBar() {
@@ -116,7 +118,32 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildDrawer() {
+    return Drawer(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 32.0),
+        child: Column(      
+          children: <Widget>[
+            ListTile(
+              title: const Text('Current Bids'), 
+              onTap: () {
+                MaterialPageRoute route = MaterialPageRoute(builder: (context) => const CurrentBidsPage());
+                Navigator.of(context).push(route);
+              }
+            ),
 
+            ListTile(
+              title: const Text('Your Items'),
+              onTap: () {
+                MaterialPageRoute route = MaterialPageRoute(builder: (context) => const YourItemsPage());
+                Navigator.of(context).push(route);
+              }
+            )
+          ]
+        ),
+      )
+    );
+  }
 
   static const double _cardSize = 256.0;
 }
