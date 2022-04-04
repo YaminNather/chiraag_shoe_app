@@ -2,6 +2,7 @@ import 'package:chiraag_shoe_app/home_page/home_page.dart';
 import 'package:chiraag_shoe_app/login_page/login_page.dart';
 import 'package:chiraag_shoe_app/product_page/product_page.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'current_bids_page/current_bids_page.dart';
 import 'products_page/products_page.dart';
@@ -18,6 +19,7 @@ class App extends StatelessWidget {
       theme: defaultTheme.copyWith(
         colorScheme: defaultTheme.colorScheme.copyWith(primary: Colors.red),
         scaffoldBackgroundColor: const Color(0xFF313131),
+        textTheme: GoogleFonts.poppinsTextTheme(defaultTheme.textTheme),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
           elevation: 0.0,
@@ -38,6 +40,7 @@ class App extends StatelessWidget {
         'ProductPage': (context) => const ProductPage(id: "0"),
         'ProductsPage': (context) => const ProductsPage()
       },
+      // home: const LoginPage()
       home: const HomePage()
     );
   }

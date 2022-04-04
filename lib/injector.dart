@@ -1,7 +1,6 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
-import 'package:supabase/supabase.dart';
 
 import 'injector.config.dart';
 
@@ -13,5 +12,8 @@ void configureDependencies() => $initGetIt(getIt);
 
 @module
 abstract class BackendClientModule {
-  Client get client => Client();
+  Client get client => _client;
+
+
+  final Client _client = Client();
 }

@@ -1,5 +1,6 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:flutter/material.dart';
+import '../injector.dart';
 import 'product_card.dart';
 
 class ProductsPage extends StatefulWidget {
@@ -66,6 +67,6 @@ class _ProductsPageState extends State<ProductsPage> {
   }
 
   
-  final Client _client = Client();
+  final Client _client = getIt<Client>();
   List<Product>? _products;
 }

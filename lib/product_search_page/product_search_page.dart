@@ -88,13 +88,14 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
   static Product product = Product(
     id: '0',
     name: 'Nike Radion',
-    description: 'Crazy shoe',
-    categoryId: null,
-    price: 3000.0,
+    seller: 'Yamin',
+    description: 'Crazy shoe',    
+    initialPrice: 3000.0,
     createdAt: DateTime(2022, 1, 23),
     mainImage: 'https://freepngimg.com/thumb/categories/627.png',
     images: <String>[
       'https://freepngimg.com/thumb/categories/627.png'
-    ]
+    ],
+    isAvailable: true
   );
 }

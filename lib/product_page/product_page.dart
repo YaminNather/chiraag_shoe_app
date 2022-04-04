@@ -1,8 +1,8 @@
 import 'package:chiraag_shoe_app/product_page/images_carousel/images_carousel.dart';
-import 'package:chiraag_shoe_app/product_page/radio_button.dart';
-import 'package:chiraag_shoe_app/product_page/radio_group.dart';
 import 'package:flutter/material.dart';
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
+
+import '../injector.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({ Key? key, required this.id }) : super(key: key);
@@ -19,12 +19,19 @@ class _ProductPageState extends State<ProductPage> {
   void initState() {
     super.initState();
 
-    print("WIDGET_ID ${ widget.id }");
-    _client.inventory().getProduct(widget.id).then(
-      (value) {
-        setState(() => _product = value);
-      }
-    );
+    Future<void> asyncPart() async {
+      final Product product = (await _client.inventory().getProduct(widget.id))!;
+      final List<Bid> bids = await _bidServices().getBidsForProduct(product.id);
+      
+      setState(
+        () {
+          _product = product;
+          _bids = bids;
+        }
+      );
+    }
+
+    asyncPart();    
   }
 
   @override
@@ -56,7 +63,7 @@ class _ProductPageState extends State<ProductPage> {
             Container(
               height: 40.0,
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(product.name, style: theme.textTheme.headline4),
+              child: Text(product.name.toUpperCase(), style: theme.textTheme.headline4),
             ),
 
             const SizedBox(height: 16.0),
@@ -153,9 +160,16 @@ class _ProductPageState extends State<ProductPage> {
     );
   }
 
-
   Widget _buildBidButton() {
     final ThemeData theme = Theme.of(context);
+
+    final Product product = _product!;
+    final List<Bid> bids = _bids!;
+
+    Future<void> onPressed() async {
+      await _bidServices().placeBid(product.id, double.parse(_amountFieldController.text));
+      await _getBidsFromBackend();
+    }
 
     return SizedBox(
       width: 160.0, height: 64.0,
@@ -168,10 +182,10 @@ class _ProductPageState extends State<ProductPage> {
 
             const SizedBox(height: 8.0),
 
-            const Text('Rs. 3000')
-          ],
+            Text('> Rs. ${(bids.isEmpty) ? product.initialPrice : bids.last.amount}')
+          ]
         ),
-        onPressed: () {}
+        onPressed: (_getAmountFieldValue() > bids.last.amount) ? onPressed : null
       )
     );
   }
@@ -179,12 +193,14 @@ class _ProductPageState extends State<ProductPage> {
   Widget _buildSellButton() {
     final ThemeData theme = Theme.of(context);
 
+    final Product product = _product!;
+
+    Future<void> onPressed() async {}
+
     return SizedBox(
       width: 160.0, height: 64.0,
       child: ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(theme.colorScheme.error)
-        ),
+        style: ButtonStyle(backgroundColor: MaterialStateProperty.all(theme.colorScheme.error)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -192,21 +208,40 @@ class _ProductPageState extends State<ProductPage> {
 
             const SizedBox(height: 8.0),
 
-            const Text('Rs. 2500')
+            Text('< Rs. ${product.initialPrice}')
           ],
         ),
-        onPressed: () {}
+        onPressed: (_getAmountFieldValue() < product.initialPrice) ? onPressed : null
       )
     );
   }
 
   Widget _buildAmountField() {
     return TextField(
-      decoration: InputDecoration(border: OutlineInputBorder(), hintText: 'Amount')
+      controller: _amountFieldController,
+      decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'Amount'),
+      onChanged: (text) => setState(() {})
     );
   }
 
+  Future<void> _getBidsFromBackend() async {
+    List<Bid> bids = await _bidServices().getBidsForProduct(_product!.id);
+    setState(() => _bids = bids);
+  }
 
-  final Client _client = Client();
+  double _getAmountFieldValue() {
+    if(_amountFieldController.text.isNotEmpty)
+      return double.parse(_amountFieldController.text);
+    else
+      return 0.0;
+  }
+
+  BidServices _bidServices() => _client.bidServices();
+
+
   Product? _product;
+  List<Bid>? _bids;
+  
+  final Client _client = getIt<Client>();
+  final TextEditingController _amountFieldController = TextEditingController();  
 }

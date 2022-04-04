@@ -57,7 +57,7 @@ class _ProductCardState extends State<ProductCard> {
 
                   const SizedBox(height: 8.0),
 
-                  Text('Rs. ${widget.product.price}', style: theme.textTheme.headline6)
+                  Text('Rs. ${widget.product.initialPrice}', style: theme.textTheme.headline6)
                 ]
               )
             ),
