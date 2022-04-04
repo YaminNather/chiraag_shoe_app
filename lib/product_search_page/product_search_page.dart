@@ -2,6 +2,8 @@ import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:chiraag_shoe_app/product_page/product_page.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/product_card.dart';
+
 class ProductSearchPage extends StatefulWidget {
   const ProductSearchPage({ Key? key }) : super(key: key);
 
@@ -29,11 +31,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
                 const SizedBox(width: 16.0),
 
                 Expanded(
-                  child: TextField(
-                    controller: _searchFieldController,
-                    decoration: const InputDecoration(hintText: 'Search'),
-                    onChanged: (value) => _updateSearch()
-                  ),
+                  child: _buildSearchField()
                 )
               ]
             )
@@ -51,10 +49,19 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
     if(_isLoading)
       return const Center(child: CircularProgressIndicator.adaptive());
 
+    final MediaQueryData mediaQuery = MediaQuery.of(context);
+
+    const double padding = 32.0;
+
     return ListView.separated(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(padding),
       itemCount: 5,
-      itemBuilder: (context, index) => _buildProductListTile(product),
+      itemBuilder: (context, index) {
+        return SizedBox(
+          height: mediaQuery.size.width - padding * 2.0,
+          child: ProductCard(product)
+        );
+      },
       separatorBuilder: (context, index) => const Divider(thickness: 2.0)
     );
   }
@@ -69,6 +76,17 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
       leading: Image(image: NetworkImage(product.mainImage)),
       title: Text(product.name),
       onTap: onTap
+    );
+  }
+
+  Widget _buildSearchField() {
+    return TextField(    
+      controller: _searchFieldController,
+      decoration: const InputDecoration(
+        hintText: 'Search', 
+        suffixIcon: Icon(Icons.search)
+      ),
+      onChanged: (value) => _updateSearch()
     );
   }
 

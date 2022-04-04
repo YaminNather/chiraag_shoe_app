@@ -1,10 +1,11 @@
+import 'package:chiraag_shoe_app/add_product_page/add_product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:chiraag_shoe_app/current_bids_page/current_bids_page.dart';
 import 'package:chiraag_shoe_app/orders_page/orders_page.dart';
 import 'package:chiraag_shoe_app/your_items_page/your_items_page.dart';
 import 'package:chiraag_shoe_app/product_search_page/product_search_page.dart';
-import 'product_card.dart';
+import '../widgets/product_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({ Key? key }) : super(key: key);
@@ -78,7 +79,12 @@ class _HomePageState extends State<HomePage> {
           height: screenSize.width - 64.0,
           child: PageView.builder(
             itemCount: products.length,
-            itemBuilder: (context, index) => ProductCard(products[index])
+            itemBuilder: (context, index) {
+              return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ProductCard(products[index]),
+            );
+            }
           ),
         )
       ]
@@ -111,6 +117,14 @@ class _HomePageState extends State<HomePage> {
               title: const Text('Your Items'),
               onTap: () {
                 MaterialPageRoute route = MaterialPageRoute(builder: (context) => const YourItemsPage());
+                Navigator.of(context).push(route);
+              }
+            ),
+            
+            ListTile(
+              title: const Text('Add Product'),
+              onTap: () {
+                MaterialPageRoute route = MaterialPageRoute(builder: (context) => const AddProductPage());
                 Navigator.of(context).push(route);
               }
             )

@@ -17,16 +17,19 @@ class App extends StatelessWidget {
 
     return MaterialApp(
       theme: defaultTheme.copyWith(
-        colorScheme: defaultTheme.colorScheme.copyWith(primary: Colors.red),
-        scaffoldBackgroundColor: const Color(0xFF313131),
-        textTheme: GoogleFonts.poppinsTextTheme(defaultTheme.textTheme),
+        colorScheme: defaultTheme.colorScheme.copyWith(
+          primary: const Color(0xFF98c642)
+        ),
+        scaffoldBackgroundColor: Colors.black,
+        textTheme: GoogleFonts.poppinsTextTheme(defaultTheme.textTheme).apply(displayColor: Colors.white),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
           elevation: 0.0,
           foregroundColor: Colors.white
         ),
         cardTheme: CardTheme(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0))
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+          color: const Color(0xFF222222)
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
