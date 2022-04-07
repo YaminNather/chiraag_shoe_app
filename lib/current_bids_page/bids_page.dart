@@ -3,14 +3,14 @@ import 'package:chiraag_shoe_app/injector.dart';
 import 'package:chiraag_shoe_app/product_page/product_page.dart';
 import 'package:flutter/material.dart';
 
-class CurrentBidsPage extends StatefulWidget {
-  const CurrentBidsPage({ Key? key }) : super(key: key);
+class BidsPage extends StatefulWidget {
+  const BidsPage({ Key? key }) : super(key: key);
 
   @override
-  State<CurrentBidsPage> createState() => _CurrentBidsPageState();
+  State<BidsPage> createState() => _BidsPageState();
 }
 
-class _CurrentBidsPageState extends State<CurrentBidsPage> {
+class _BidsPageState extends State<BidsPage> {
   @override
   void initState() {
     super.initState();

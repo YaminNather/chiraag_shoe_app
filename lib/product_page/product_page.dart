@@ -1,6 +1,7 @@
 import 'package:chiraag_shoe_app/product_page/images_carousel/images_carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
+import 'package:marquee/marquee.dart';
 
 import '../injector.dart';
 
@@ -19,7 +20,7 @@ class _ProductPageState extends State<ProductPage> {
   void initState() {
     super.initState();
 
-    Future<void> asyncPart() async {
+    Future<void> asyncPart() async {      
       final Product product = (await _client.inventory().getProduct(widget.id))!;
       final List<Bid> bids = await _bidServices().getBidsForProduct(product.id);
       
@@ -27,6 +28,7 @@ class _ProductPageState extends State<ProductPage> {
         () {
           _product = product;
           _bids = bids;
+          _isLoading = false;
         }
       );
     }
@@ -39,78 +41,73 @@ class _ProductPageState extends State<ProductPage> {
     return SafeArea(child: Scaffold(appBar: _buildAppBar(), body: _buildBody()));
   }
 
-  AppBar _buildAppBar() {
-    return AppBar(
-      actions: <IconButton>[
-        IconButton(icon: const Icon(Icons.search_outlined), onPressed: () {})
-      ]
-    );
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar();
   }
 
   Widget _buildBody() {
     final ThemeData theme = Theme.of(context);
 
-    final Product? product = _product;
-    if(product == null)
+    if(_isLoading)
       return const Center( child: CircularProgressIndicator.adaptive() );
+    
+    final Product product = _product!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              height: 40.0,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(product.name.toUpperCase(), style: theme.textTheme.headline4),
-            ),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const SizedBox(height: 16.0),
 
-            const SizedBox(height: 16.0),
+                Container(
+                  height: 40.0,
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Marquee(
+                    text: product.name.toUpperCase(), 
+                    style: theme.textTheme.headline4,
+                    
+                    pauseAfterRound: const Duration(milliseconds: 5000),
+                  )
+                ),
 
-            ImagesCarousel(product: product),
+                const SizedBox(height: 16.0),
 
-            // Center(
-            //   child: SizedBox(
-            //     height: 256.0,
-            //     child: Image.network(product.mainImage)
-            //   )
-            // ),
+                SizedBox(
+                  height: 256.0,
+                  child: ImagesCarousel(product: product)
+                ),
 
-            const SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('Description', style: theme.textTheme.headline5),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      _buildSizeInfo(),
 
-                  const SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
 
-                  Text(product.description)
-                ]
-              ),
+                      Text(product.description)
+                    ]
+                  ),
+                ),
+
+                const SizedBox(height: 16.0)
+              ]
             )
-          ]
-        ),
-
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              _buildSizeInfo(),
-
-              const SizedBox(height: 16.0),
-            ]
-          ),
+          )
         ),
 
         const SizedBox(height: 16.0),
 
-        Expanded(child: _buildBottomArea())
+        _buildBottomArea()
       ]
     );
   }  
@@ -131,32 +128,54 @@ class _ProductPageState extends State<ProductPage> {
   Widget _buildBottomArea() {
     final ThemeData theme = Theme.of(context);
     
-    return SizedBox(
-      width: double.infinity,
-      child: DecoratedBox(
-        decoration: new BoxDecoration(color: theme.colorScheme.surface),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              _buildAmountField(),
-              
-              const SizedBox(height: 32.0),
+    return Stack(
+      children: <Widget>[
+        _buildBottomLayerInactiveOverlay(          
+          enabled: !_product!.isAvailable,
+          child: SizedBox(
+            width: double.infinity,
+            child: DecoratedBox(
+              decoration: new BoxDecoration(color: theme.colorScheme.surface),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    _buildAmountField(),
+                    
+                    const SizedBox(height: 32.0),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  _buildBidButton(),
-                  
-                  _buildSellButton()
-                ]
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        _buildBidButton(),
+                        
+                        _buildSellButton()
+                      ]
+                    )
+                  ]
+                )
               )
-            ]
+            )
           )
-        )
-      )
+        ),
+
+        if(!_product!.isAvailable)
+          Positioned.fill(
+            child: Center(child: Text('Not available for bidding!!', style: theme.textTheme.headline5))
+          )
+      ]
+    );
+  }
+
+  Widget _buildBottomLayerInactiveOverlay({required Widget child, bool enabled = true}) {
+    return IgnorePointer(
+      ignoring: enabled,
+      child: ColorFiltered(
+        colorFilter: ColorFilter.mode((enabled) ? Colors.grey.shade700 : Colors.white, BlendMode.multiply),
+        child: child
+      ),
     );
   }
 
@@ -182,10 +201,10 @@ class _ProductPageState extends State<ProductPage> {
 
             const SizedBox(height: 8.0),
 
-            Text('> Rs. ${(bids.isEmpty) ? product.initialPrice : bids.last.amount}')
+            Text('> Rs. ${_getLargestBidAmount()}')
           ]
         ),
-        onPressed: (_getAmountFieldValue() > bids.last.amount) ? onPressed : null
+        onPressed: (_getAmountFieldValue() > _getLargestBidAmount()) ? onPressed : null
       )
     );
   }
@@ -195,7 +214,14 @@ class _ProductPageState extends State<ProductPage> {
 
     final Product product = _product!;
 
-    Future<void> onPressed() async {}
+    Future<void> onPressed() async {
+      setState(() => _isLoading = true);
+      final Product createdProduct = await _inventory().sellBid(_product!.id, _getAmountFieldValue());
+
+      MaterialPageRoute route = MaterialPageRoute(builder: (context) => ProductPage(id: createdProduct.id));
+      Navigator.of(context).pushReplacement(route);
+      setState(() => _isLoading = false);
+    }
 
     return SizedBox(
       width: 160.0, height: 64.0,
@@ -220,6 +246,7 @@ class _ProductPageState extends State<ProductPage> {
     return TextField(
       controller: _amountFieldController,
       decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'Amount'),
+      keyboardType: TextInputType.number,
       onChanged: (text) => setState(() {})
     );
   }
@@ -236,8 +263,13 @@ class _ProductPageState extends State<ProductPage> {
       return 0.0;
   }
 
+  double _getLargestBidAmount() => (_bids!.isEmpty) ? _product!.initialPrice : _bids!.last.amount;
+
   BidServices _bidServices() => _client.bidServices();
 
+  Inventory _inventory() => _client.inventory();
+
+  bool _isLoading = true;
 
   Product? _product;
   List<Bid>? _bids;

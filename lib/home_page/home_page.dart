@@ -1,7 +1,8 @@
 import 'package:chiraag_shoe_app/add_product_page/add_product_page.dart';
+import 'package:chiraag_shoe_app/widgets/carousel/carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
-import 'package:chiraag_shoe_app/current_bids_page/current_bids_page.dart';
+import 'package:chiraag_shoe_app/current_bids_page/bids_page.dart';
 import 'package:chiraag_shoe_app/orders_page/orders_page.dart';
 import 'package:chiraag_shoe_app/your_items_page/your_items_page.dart';
 import 'package:chiraag_shoe_app/product_search_page/product_search_page.dart';
@@ -77,15 +78,15 @@ class _HomePageState extends State<HomePage> {
 
         SizedBox(
           height: screenSize.width - 64.0,
-          child: PageView.builder(
+          child: Carousel(
             itemCount: products.length,
             itemBuilder: (context, index) {
               return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ProductCard(products[index]),
-            );
+                padding: const EdgeInsets.all(32.0),
+                child: ProductCard(products[index])
+              );
             }
-          ),
+          )
         )
       ]
     );
@@ -100,7 +101,7 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               title: const Text('Current Bids'), 
               onTap: () {
-                MaterialPageRoute route = MaterialPageRoute(builder: (context) => const CurrentBidsPage());
+                MaterialPageRoute route = MaterialPageRoute(builder: (context) => const BidsPage());
                 Navigator.of(context).push(route);
               }
             ),
@@ -146,9 +147,9 @@ List<Product> frontendSampleProducts = <Product>[
     description: 'Crazy shoe',    
     initialPrice: 3000.0,
     createdAt: DateTime(2022, 1, 23),
-    mainImage: 'https://freepngimg.com/thumb/categories/627.png',
+    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
     images: <String>[
-      'https://freepngimg.com/thumb/categories/627.png'
+      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
     ],
     isAvailable: true
   ),
@@ -159,9 +160,9 @@ List<Product> frontendSampleProducts = <Product>[
     description: 'Amazing shoe',    
     initialPrice: 3000.0,
     createdAt: DateTime(2022, 1, 21),
-    mainImage: 'https://freepngimg.com/thumb/categories/627.png',
+    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
     images: <String>[
-      'https://freepngimg.com/thumb/categories/627.png'
+      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
     ],
     isAvailable: true
   ),
@@ -172,9 +173,9 @@ List<Product> frontendSampleProducts = <Product>[
     description: 'Crazy shoe',    
     initialPrice: 3000.0,
     createdAt: DateTime(2022, 1, 23),
-    mainImage: 'https://freepngimg.com/thumb/categories/627.png',
+    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
     images: <String>[
-      'https://freepngimg.com/thumb/categories/627.png'
+      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
     ],
     isAvailable: true
   ),
@@ -185,9 +186,9 @@ List<Product> frontendSampleProducts = <Product>[
     description: 'Amazing shoe',    
     initialPrice: 3000.0,
     createdAt: DateTime(2022, 1, 21),
-    mainImage: 'https://freepngimg.com/thumb/categories/627.png',
+    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
     images: <String>[
-      'https://freepngimg.com/thumb/categories/627.png'
+      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
     ],
     isAvailable: true
   ),
@@ -198,9 +199,9 @@ List<Product> frontendSampleProducts = <Product>[
     description: 'Crazy shoe',    
     initialPrice: 3000.0,
     createdAt: DateTime(2022, 1, 23),
-    mainImage: 'https://freepngimg.com/thumb/categories/627.png',
+    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
     images: <String>[
-      'https://freepngimg.com/thumb/categories/627.png'
+      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
     ],
     isAvailable: true
   ),
@@ -211,9 +212,9 @@ List<Product> frontendSampleProducts = <Product>[
     description: 'Amazing shoe',    
     initialPrice: 3000.0,
     createdAt: DateTime(2022, 1, 21),
-    mainImage: 'https://freepngimg.com/thumb/categories/627.png',
+    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
     images: <String>[
-      'https://freepngimg.com/thumb/categories/627.png'
+      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
     ],
     isAvailable: true
   )

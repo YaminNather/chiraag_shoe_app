@@ -1,8 +1,8 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
-import 'package:chiraag_shoe_app/product_page/product_page.dart';
+import 'package:chiraag_shoe_app/injector.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/product_card.dart';
+import 'product_card.dart';
 
 class ProductSearchPage extends StatefulWidget {
   const ProductSearchPage({ Key? key }) : super(key: key);
@@ -13,28 +13,44 @@ class ProductSearchPage extends StatefulWidget {
 
 class _ProductSearchPageState extends State<ProductSearchPage> {
   @override
+  void initState() {    
+    super.initState();
+
+    Future<void> asyncPart() async {
+      setState(() => _isLoading = true);
+
+      final List<Product> allProducts = await _inventory.getAllProducts();
+      _allProducts = allProducts;
+      _searchSuggestions = _allProducts;
+      
+      setState(() => _isLoading = false);
+    }
+
+    asyncPart();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SafeArea(child: Scaffold(body: _buildBody()));
+    return SafeArea(child: Scaffold(appBar: _buildAppBar(), body: _buildBody()));
+  }
+
+  PreferredSizeWidget _buildAppBar() {
+    // final ThemeData theme = Theme.of(context);
+
+    return AppBar(title: const Text('Search'));
   }
 
   Widget _buildBody() {
+    if(_isLoading)
+      return const Center(child: CircularProgressIndicator.adaptive());
+
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
       child: Column(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: <Widget>[
-                IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => Navigator.of(context).pop()),
-
-                const SizedBox(width: 16.0),
-
-                Expanded(
-                  child: _buildSearchField()
-                )
-              ]
-            )
+            child: _buildSearchField()
           ),
 
           Expanded(
@@ -46,36 +62,29 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
   }
 
   Widget _buildSearchResults() {
-    if(_isLoading)
-      return const Center(child: CircularProgressIndicator.adaptive());
-
-    final MediaQueryData mediaQuery = MediaQuery.of(context);
-
+    final List<Product> searchSuggestions = _searchSuggestions!;
+    
     const double padding = 32.0;
 
-    return ListView.separated(
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2, 
+        mainAxisSpacing: 32.0,
+        crossAxisSpacing: 32.0,
+        childAspectRatio: 1.0/2.0
+      ),
       padding: const EdgeInsets.all(padding),
-      itemCount: 5,
+      itemCount: searchSuggestions.length,
       itemBuilder: (context, index) {
-        return SizedBox(
-          height: mediaQuery.size.width - padding * 2.0,
-          child: ProductCard(product)
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            // SizedBox(height: (index % 2 == 1) ? 64.0 : 0.0),
+
+            ProductCard(searchSuggestions[index]),
+          ],
         );
-      },
-      separatorBuilder: (context, index) => const Divider(thickness: 2.0)
-    );
-  }
-
-  Widget _buildProductListTile(final Product product) {
-    void onTap() {
-      final MaterialPageRoute route = MaterialPageRoute(builder: (context) => const ProductPage(id: '0'));
-      Navigator.of(context).push(route);
-    }
-
-    return ListTile(
-      leading: Image(image: NetworkImage(product.mainImage)),
-      title: Text(product.name),
-      onTap: onTap
+      }      
     );
   }
 
@@ -86,22 +95,30 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
         hintText: 'Search', 
         suffixIcon: Icon(Icons.search)
       ),
-      onChanged: (value) => _updateSearch()
+      onChanged: (text) => _updateSearch(text)
     );
   }
 
-  Future<void> _updateSearch() async {
-    setState(() => _isLoading = true);
+  Future<void> _updateSearch(final String searchTerm) async {
+    final List<Product> allProducts = _allProducts!;
+    final List<Product> searchSuggestions = <Product>[];
+    for(final Product product in allProducts) {
+      if(product.name.toLowerCase().contains(searchTerm.toLowerCase()))
+        searchSuggestions.add(product);
+    }
 
-    await Future.delayed(const Duration(milliseconds: 300));
-
-    setState(() => _isLoading = false);
+    setState(() => _searchSuggestions = searchSuggestions);
   }  
 
 
 
-  bool _isLoading = false;
+  bool _isLoading = true;
+  List<Product>? _allProducts;
+  List<Product>? _searchSuggestions;
+
   final TextEditingController _searchFieldController = TextEditingController();
+
+  final Inventory _inventory = getIt<Client>().inventory();  
 
   static Product product = Product(
     id: '0',
@@ -110,7 +127,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
     description: 'Crazy shoe',    
     initialPrice: 3000.0,
     createdAt: DateTime(2022, 1, 23),
-    mainImage: 'https://freepngimg.com/thumb/categories/627.png',
+    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
     images: <String>[
       'https://freepngimg.com/thumb/categories/627.png'
     ],

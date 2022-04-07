@@ -1,6 +1,11 @@
+import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
+import 'package:chiraag_shoe_app/your_items_page/bidding_items_tab_view.dart';
 import 'package:flutter/material.dart';
 
+import '../injector.dart';
 import '../product_page/product_page.dart';
+import 'accepted_items_tab_view.dart';
+import 'added_items_tab_view.dart';
 
 class YourItemsPage extends StatefulWidget {
   const YourItemsPage({ Key? key }) : super(key: key);
@@ -10,9 +15,27 @@ class YourItemsPage extends StatefulWidget {
 }
 
 class _YourItemsPageState extends State<YourItemsPage> {
+   @override
+  void initState() {    
+    super.initState();
+
+    Future<void> asyncPart() async {
+      final List<SoldItem> soldItems = await _inventory.getAllSellersProducts();
+
+      setState(
+        () {
+          _isLoading = false;
+          _soldItems = soldItems;
+        }
+      );
+    }
+
+    asyncPart();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: _buildAppBar(), body: _buildBody());
+    return SafeArea(child: Scaffold(appBar: _buildAppBar(), body: _buildBody()));    
   }
 
   PreferredSizeWidget _buildAppBar() {
@@ -20,63 +43,67 @@ class _YourItemsPageState extends State<YourItemsPage> {
   }
 
   Widget _buildBody() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: ListView.separated(
-        itemCount: 6,
-        itemBuilder: (context, index) {
-          final int remainder = index % 3;
-          
-          if(remainder == 0)
-            return _buildOngoingBidItem();
-          else if(remainder == 1)
-            return _buildAcceptedBidItem();
-          else
-            return _buildDeclinedBidItem();
-        },
-        separatorBuilder: (context, index) => const Divider(thickness: 2.0)
+    return DefaultTabController(
+      length: 3,
+      child: Column(
+        children: <Widget>[
+          const TabBar(
+            tabs: <Tab>[
+              Tab(text: 'Added'),
+              
+              Tab(text: 'Bidding'),
+              
+              Tab(text: 'Accepted')
+            ]
+          ),
+
+          Expanded(
+            child: _buildTabBarView()
+          )
+        ]
       )
     );
   }
 
-  Widget _buildItem({required final Widget bidStatus}) {
-    return ListTile(
-      leading: const Image(image: NetworkImage('https://freepngimg.com/thumb/categories/627.png')),
-      title:  const Text('Nike Shoe'),
-      subtitle: bidStatus,
-      onTap: () {
-        final MaterialPageRoute route = MaterialPageRoute(builder: (context) => const ProductPage(id: '0'));
-        Navigator.of(context).push(route);
-      }
+  Widget _buildTabBarView() {
+    if(_isLoading)
+      return const Center(child: CircularProgressIndicator());
+
+    return TabBarView(
+      children: <Widget>[              
+        _buildAddedItemsTabView(),
+
+        _buildBiddingItemsTabView(),
+
+        _buildAcceptedItemsTabView()
+      ]
     );
   }
 
-  Widget _buildOngoingBidItem() {
-    final ThemeData theme = Theme.of(context);
-
-    return _buildItem(
-      bidStatus: RichText(
-        text: TextSpan(
-          text: 'Highest Bid: ', 
-          children: <TextSpan>[
-            TextSpan(text: 'Rs 32,000', style: theme.textTheme.headline6!.copyWith(color: Colors.green))
-          ]
-        )
-      )
-    );
+  Widget _buildAddedItemsTabView() {
+    List<SoldItem> addedItems = List<SoldItem>.from(_soldItems!);
+    addedItems.removeWhere((element) => element.bid != null || element.order != null);
+    
+    return AddedItemsTabView(addedItems);
+  }
+  
+  Widget _buildBiddingItemsTabView() {
+    List<SoldItem> biddingItems = List<SoldItem>.from(_soldItems!);
+    biddingItems.removeWhere((element) => !(element.bid != null && element.order == null));
+    
+    return BiddingItemsTabView(biddingItems);
+  }
+  
+  Widget _buildAcceptedItemsTabView() {
+    List<SoldItem> acceptedItems = List<SoldItem>.from(_soldItems!);
+    acceptedItems.removeWhere((element) => !(element.bid == null && element.order != null));
+    
+    return AcceptedItemsTabView(acceptedItems);
   }
 
-  Widget _buildDeclinedBidItem() {
-    final ThemeData theme = Theme.of(context);
 
-    return _buildItem( bidStatus: Text('Bid declined', style: TextStyle(color: theme.colorScheme.error)) );
-  }
 
-  Widget _buildAcceptedBidItem() {
-    final ThemeData theme = Theme.of(context);
-
-    return _buildItem(
-      bidStatus: Text('Bid accepted: Delivered', style: TextStyle(color: theme.colorScheme.primary))
-    );
-  }
+  bool _isLoading = true;
+  List<SoldItem>? _soldItems;
+  final Inventory _inventory = getIt<Client>().inventory();
 }

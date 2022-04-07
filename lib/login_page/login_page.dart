@@ -1,5 +1,4 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
-import 'package:chiraag_shoe_app/products_page/products_page.dart';
 import 'package:chiraag_shoe_app/sign_up_page/sign_up_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -162,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
 
         setState(() => _isLoading = true);
         
-        if(username.isEmpty)
+        if(username.isNotEmpty)
           await _authentication.loginWithUsername(username, password);
         else
           await _authentication.loginWithEmail(email, password);

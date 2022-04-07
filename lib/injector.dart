@@ -15,5 +15,5 @@ abstract class BackendClientModule {
   Client get client => _client;
 
 
-  final Client _client = Client();
+  final Client _client = Client.instance;
 }
