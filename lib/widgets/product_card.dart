@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:flutter/material.dart';
@@ -10,81 +11,39 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-
-    return Material(
-      borderRadius: (theme.cardTheme.shape as RoundedRectangleBorder).borderRadius,
+    return Card(
       clipBehavior: Clip.hardEdge,
-      child: DecoratedBox(        
-        decoration: BoxDecoration(
-          gradient: RadialGradient(
-            
-            colors: <Color>[
-              theme.cardColor.withOpacity(0.0),
-              theme.cardColor
+      child: InkWell(
+        onTap: () {
+          MaterialPageRoute route = MaterialPageRoute(builder: (context) => ProductPage(id: product.id));
+          Navigator.of(context).push(route);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: Center(child: _buildImage())
+              ),
+
+              const SizedBox(height: 48.0),
+
+              Text(product.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+
+              const SizedBox(height: 8.0),
+              
+              Text('Rs. ${product.initialPrice}')
             ]
           )
-        ),
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              right: 0.0,
-              bottom: 0.0,
-              child: _buildTickButton(theme)
-            ),
-
-            InkWell(
-              onTap: () {
-                MaterialPageRoute route = MaterialPageRoute(builder: (context) => ProductPage(id: product.id));
-                Navigator.of(context).push(route);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('Rs. ${product.initialPrice}', style: theme.textTheme.headline6),
-                    
-                    const SizedBox(height: 32.0),
-                    
-                    Expanded(
-                      child: Center(child: _buildImage())
-                    ),
-
-                    const SizedBox(height: 48.0),
-
-                    Text(product.name, style: theme.textTheme.headline5)
-                  ]
-                )
-              )
-            ),
-          ],
-        ),
+        )
       )
     );    
   }
 
   Widget _buildImage() {
-    return Transform.rotate(
-      angle: -18.0 * (pi / 180.0),
-      child: Image(image: NetworkImage(product.mainImage), fit: BoxFit.cover)
-    );
+    return Image(image: NetworkImage(product.mainImage), fit: BoxFit.contain);
   }
-
-  Widget _buildTickButton(final ThemeData theme) {
-    final RoundedRectangleBorder shape = theme.cardTheme.shape as RoundedRectangleBorder;
-    final Radius radius = shape.borderRadius.resolve(TextDirection.ltr).topLeft;
-    
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary,
-        borderRadius: BorderRadius.only(topLeft: radius, bottomRight: radius)
-      ),
-      padding: const EdgeInsets.all(8.0),
-      child: IconButton(icon: const Icon(Icons.check), onPressed: () {})
-    );
-  }
-
 
 
   final Product product;

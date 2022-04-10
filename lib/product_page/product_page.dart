@@ -20,7 +20,7 @@ class _ProductPageState extends State<ProductPage> {
   void initState() {
     super.initState();
 
-    Future<void> asyncPart() async {      
+    Future<void> asyncPart() async {
       final Product product = (await _client.inventory().getProduct(widget.id))!;
       final List<Bid> bids = await _bidServices().getBidsForProduct(product.id);
       
@@ -62,27 +62,12 @@ class _ProductPageState extends State<ProductPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                const SizedBox(height: 16.0),
-
-                Container(
-                  height: 40.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Marquee(
-                    text: product.name.toUpperCase(), 
-                    style: theme.textTheme.headline4,
-                    
-                    pauseAfterRound: const Duration(milliseconds: 5000),
-                  )
-                ),
-
-                const SizedBox(height: 16.0),
-
                 SizedBox(
                   height: 256.0,
                   child: ImagesCarousel(product: product)
                 ),
 
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 32.0),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -90,6 +75,15 @@ class _ProductPageState extends State<ProductPage> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
+                      SizedBox(
+                        height: 40.0,
+                        child: Marquee(
+                          text: product.name.toUpperCase(),
+                          style: theme.textTheme.headline5,
+                          pauseAfterRound: const Duration(milliseconds: 5000)
+                        ),
+                      ),
+
                       _buildSizeInfo(),
 
                       const SizedBox(height: 16.0),
@@ -135,7 +129,10 @@ class _ProductPageState extends State<ProductPage> {
           child: SizedBox(
             width: double.infinity,
             child: DecoratedBox(
-              decoration: new BoxDecoration(color: theme.colorScheme.surface),
+              decoration: new BoxDecoration(
+                border: Border.all(color: theme.colorScheme.onSurface.withOpacity(0.2)),
+                borderRadius: BorderRadius.circular(16.0)
+              ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
                 child: Column(
@@ -193,15 +190,15 @@ class _ProductPageState extends State<ProductPage> {
     return SizedBox(
       width: 160.0, height: 64.0,
       child: ElevatedButton(
-        style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.green)),
+        style: ButtonStyle(backgroundColor: MaterialStateProperty.all(theme.colorScheme.primary)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text('Bid', style: theme.textTheme.headline6),
+            Text('Bid', style: theme.textTheme.headline6!.copyWith(color: theme.colorScheme.onPrimary)),
 
             const SizedBox(height: 8.0),
 
-            Text('> Rs. ${_getLargestBidAmount()}')
+            Text('> Rs. ${_getLargestBidAmount()}', style: TextStyle(color: theme.colorScheme.onPrimary))
           ]
         ),
         onPressed: (_getAmountFieldValue() > _getLargestBidAmount()) ? onPressed : null
@@ -226,11 +223,11 @@ class _ProductPageState extends State<ProductPage> {
     return SizedBox(
       width: 160.0, height: 64.0,
       child: ElevatedButton(
-        style: ButtonStyle(backgroundColor: MaterialStateProperty.all(theme.colorScheme.error)),
+        style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.black)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text('Sell', style: theme.textTheme.headline6),
+            Text('Sell', style: theme.textTheme.headline6!.copyWith(color: theme.colorScheme.onPrimary)),
 
             const SizedBox(height: 8.0),
 

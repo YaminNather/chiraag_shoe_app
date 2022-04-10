@@ -3,7 +3,6 @@ import 'package:chiraag_shoe_app/your_items_page/bidding_items_tab_view.dart';
 import 'package:flutter/material.dart';
 
 import '../injector.dart';
-import '../product_page/product_page.dart';
 import 'accepted_items_tab_view.dart';
 import 'added_items_tab_view.dart';
 
@@ -43,12 +42,15 @@ class _YourItemsPageState extends State<YourItemsPage> {
   }
 
   Widget _buildBody() {
+    final ThemeData theme = Theme.of(context);
+
     return DefaultTabController(
       length: 3,
       child: Column(
         children: <Widget>[
-          const TabBar(
-            tabs: <Tab>[
+          TabBar(
+            labelColor: theme.textTheme.bodyText1!.color,
+            tabs: const <Tab>[
               Tab(text: 'Added'),
               
               Tab(text: 'Bidding'),
