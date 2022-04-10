@@ -1,5 +1,3 @@
-import 'package:chiraag_shoe_app/login_page/login_page.dart';
-
 import 'login_or_authentication_redirector/login_or_authentication_redirector.dart';
 import 'package:chiraag_shoe_app/product_page/product_page.dart';
 import 'package:flutter/material.dart';
@@ -12,38 +10,44 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData defaultTheme = ThemeData.dark();
+    final ThemeData defaultTheme = ThemeData.light();
+
+    final ColorScheme colorScheme = ColorScheme.fromSeed(seedColor: Colors.green);
 
     return MaterialApp(
       theme: defaultTheme.copyWith(
-        colorScheme: defaultTheme.colorScheme.copyWith(
-          primary: const Color(0xFF98c642)
-        ),
-        scaffoldBackgroundColor: const Color(0xFF232323),
-        textTheme: GoogleFonts.poppinsTextTheme(defaultTheme.textTheme).apply(displayColor: Colors.white),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
-          foregroundColor: Colors.white
+        colorScheme: colorScheme,
+        textTheme: _getTextTheme(defaultTheme),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.transparent, 
+          elevation: 0.0, 
+          foregroundColor: colorScheme.onSurface
         ),
         cardTheme: CardTheme(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-          // color: const Color(0xFF222222)
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ButtonStyle(
-            shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0))
-            )
+          elevation: 0.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(2.0),
+            side: BorderSide(width: 1.0, color: colorScheme.onSurface.withOpacity(0.2))
           )
-        )
-      ),
-      routes: <String, Widget Function(BuildContext)>{
-        'ProductPage': (context) => const ProductPage(id: "0"),
-        'ProductsPage': (context) => const ProductsPage()
-      },
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(elevation: 8.0)
+      ),      
       // home: const LoginPage()
       home: const LoginOrAuthenticationRedirector()
     );
+  }
+
+  TextTheme _getTextTheme(ThemeData defaultTheme) {
+    TextTheme r = GoogleFonts.poppinsTextTheme(defaultTheme.textTheme);
+    r = r.copyWith(
+      headline1: r.headline1!.copyWith(fontWeight: FontWeight.bold),
+      headline2: r.headline2!.copyWith(fontWeight: FontWeight.bold),
+      headline3: r.headline3!.copyWith(fontWeight: FontWeight.bold),
+      headline4: r.headline4!.copyWith(fontWeight: FontWeight.bold),
+      headline5: r.headline5!.copyWith(fontWeight: FontWeight.bold),
+      headline6: r.headline6!.copyWith(fontWeight: FontWeight.bold)
+    );
+
+    return r;
   }
 }

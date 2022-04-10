@@ -2,6 +2,8 @@ import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:chiraag_shoe_app/injector.dart';
 import 'package:flutter/material.dart';
 
+import '../product_page/product_page.dart';
+import '../widgets/compact_product_card/compact_product_card.dart';
 import 'product_card.dart';
 
 class ProductSearchPage extends StatefulWidget {
@@ -35,8 +37,6 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    // final ThemeData theme = Theme.of(context);
-
     return AppBar(title: const Text('Search'));
   }
 
@@ -64,25 +64,25 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
   Widget _buildSearchResults() {
     final List<Product> searchSuggestions = _searchSuggestions!;
     
-    const double padding = 32.0;
+    const double padding = 16.0;
 
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2, 
-        mainAxisSpacing: 32.0,
-        crossAxisSpacing: 32.0,
-        childAspectRatio: 1.0/2.0
+        mainAxisSpacing: 0.0,
+        crossAxisSpacing: 0.0,
+        childAspectRatio: 1.0/1.5
       ),
       padding: const EdgeInsets.all(padding),
       itemCount: searchSuggestions.length,
       itemBuilder: (context, index) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            // SizedBox(height: (index % 2 == 1) ? 64.0 : 0.0),
-
-            ProductCard(searchSuggestions[index]),
-          ],
+        final Product product = searchSuggestions[index];
+        return CompactProductCard(
+          searchSuggestions[index],
+          onTap: () {
+            MaterialPageRoute route = MaterialPageRoute(builder: (context) => ProductPage(id: product.id));
+            Navigator.of(context).push(route);
+          }
         );
       }      
     );
@@ -93,7 +93,8 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
       controller: _searchFieldController,
       decoration: const InputDecoration(
         hintText: 'Search', 
-        suffixIcon: Icon(Icons.search)
+        suffixIcon: Icon(Icons.search),
+        border: OutlineInputBorder()
       ),
       onChanged: (text) => _updateSearch(text)
     );

@@ -1,4 +1,5 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
+import 'package:chiraag_shoe_app/logged_in_page/logged_in_page.dart';
 import '../home_page/home_page.dart';
 import '../login_page/login_page.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class _LoginOrAuthenticationRedirectorState extends State<LoginOrAuthenticationR
       if(user == null)
         page = const LoginPage();
       else
-        page = const HomePage();
+        page = const LoggedInPage();
 
       final MaterialPageRoute route = MaterialPageRoute(builder: (context) => page);
       Navigator.of(context).push(route);
