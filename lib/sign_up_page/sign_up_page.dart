@@ -3,6 +3,8 @@ import 'package:chiraag_shoe_app/products_page/products_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
+import '../injector.dart';
+
 class SignUpPage extends StatefulWidget {
   const SignUpPage({ Key? key }) : super(key: key);
 
@@ -180,7 +182,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   bool _isSignUpButtonEnabled = false;
 
-  final Authentication _authentication = Client().authentication();
+  final Authentication _authentication = getIt<Client>().authentication();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 

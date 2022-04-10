@@ -1,8 +1,10 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
-import 'package:chiraag_shoe_app/products_page/products_page.dart';
 import 'package:chiraag_shoe_app/sign_up_page/sign_up_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+
+import '../home_page/home_page.dart';
+import '../injector.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({ Key? key }) : super(key: key);
@@ -159,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
 
         setState(() => _isLoading = true);
         
-        if(username.isEmpty)
+        if(username.isNotEmpty)
           await _authentication.loginWithUsername(username, password);
         else
           await _authentication.loginWithEmail(email, password);
@@ -175,14 +177,14 @@ class _LoginPageState extends State<LoginPage> {
       }
 
       setState(() => _isLoading = false);
-      final MaterialPageRoute route = MaterialPageRoute(builder: (context) => const ProductsPage());
+      final MaterialPageRoute route = MaterialPageRoute(builder: (context) => const HomePage());
       await Navigator.of(context).push(route);
     }
 
     return SizedBox(
       width: 256.0,
       child: ElevatedButton(
-        onPressed: (_signUpButtonEnabled) ? onPressed : null, 
+        onPressed: (_signUpButtonEnabled) ? onPressed : null,
         child: const Text('Login')
       )
     );
@@ -199,17 +201,21 @@ class _LoginPageState extends State<LoginPage> {
     return Text(error, style: TextStyle(color: theme.colorScheme.error));
   }
 
+  Authentication get _authentication => _client.authentication();
+
+
 
   bool _isLoading = false;
   String? _error;
 
   bool _signUpButtonEnabled = false;
-
-  final Authentication _authentication = Client().authentication();
+  
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  
+  final Client _client = getIt<Client>();
 }

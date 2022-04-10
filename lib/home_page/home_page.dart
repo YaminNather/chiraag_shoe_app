@@ -1,7 +1,12 @@
-import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
-import 'package:chiraag_shoe_app/product_page/product_page.dart';
-import 'package:chiraag_shoe_app/product_search_page/product_search_page.dart';
+import 'package:chiraag_shoe_app/add_product_page/add_product_page.dart';
+import 'package:chiraag_shoe_app/widgets/carousel/carousel.dart';
 import 'package:flutter/material.dart';
+import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
+import 'package:chiraag_shoe_app/current_bids_page/bids_page.dart';
+import 'package:chiraag_shoe_app/orders_page/orders_page.dart';
+import 'package:chiraag_shoe_app/your_items_page/your_items_page.dart';
+import 'package:chiraag_shoe_app/product_search_page/product_search_page.dart';
+import '../widgets/product_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({ Key? key }) : super(key: key);
@@ -13,7 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: _buildAppBar(), body: _buildBody());
+    return Scaffold(appBar: _buildAppBar(), drawer: _buildDrawer(), body: _buildBody());
   }
 
   PreferredSizeWidget _buildAppBar() {
@@ -58,6 +63,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildCategorizedProductList(final String category, List<Product> products, final ThemeData theme) {
+    final MediaQueryData mediaQuery = MediaQuery.of(context);
+    final Size screenSize = mediaQuery.size;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -66,57 +74,66 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.only(left: 16.0),
           child: Text(category, style: theme.textTheme.headline4),
         ),
-
         const SizedBox(height: 16.0),
 
         SizedBox(
-          height: _cardSize,
-          child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            scrollDirection: Axis.horizontal,
+          height: screenSize.width - 64.0,
+          child: Carousel(
             itemCount: products.length,
-            itemBuilder: (context, index) => _buildProductCard(products[index], theme),
-            separatorBuilder: (context, index) => const SizedBox(width: 8.0)
-          ),
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: ProductCard(products[index])
+              );
+            }
+          )
         )
       ]
     );
-  }
+  }  
 
-  Widget _buildProductCard(final Product product, final ThemeData theme) {
-    return SizedBox(
-      width: _cardSize,
-      child: Card(
-        child: InkWell(
-          onTap: () {
-            MaterialPageRoute route = MaterialPageRoute(builder: (context) => ProductPage(id: product.id));
-            Navigator.of(context).push(route);
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: Center(child: Image(image: NetworkImage(product.mainImage), fit: BoxFit.cover))
-                ),
-
-                const SizedBox(height: 8.0),
-
-                Text(product.name),
-
-                const SizedBox(height: 8.0),
-
-                Text('Rs. ${product.price}', style: theme.textTheme.headline6)
-              ]
+  Widget _buildDrawer() {
+    return Drawer(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 32.0),
+        child: Column(      
+          children: <Widget>[
+            ListTile(
+              title: const Text('Current Bids'), 
+              onTap: () {
+                MaterialPageRoute route = MaterialPageRoute(builder: (context) => const BidsPage());
+                Navigator.of(context).push(route);
+              }
             ),
-          ),
-        )
-      ),
+
+            ListTile(
+              title: const Text('Orders'),
+              onTap: () {
+                MaterialPageRoute route = MaterialPageRoute(builder: (context) => const OrdersPage());
+                Navigator.of(context).push(route);
+              }
+            ),
+
+            ListTile(
+              title: const Text('Your Items'),
+              onTap: () {
+                MaterialPageRoute route = MaterialPageRoute(builder: (context) => const YourItemsPage());
+                Navigator.of(context).push(route);
+              }
+            ),
+            
+            ListTile(
+              title: const Text('Add Product'),
+              onTap: () {
+                MaterialPageRoute route = MaterialPageRoute(builder: (context) => const AddProductPage());
+                Navigator.of(context).push(route);
+              }
+            )
+          ]
+        ),
+      )
     );
   }
-
-
 
   static const double _cardSize = 256.0;
 }
@@ -126,73 +143,79 @@ List<Product> frontendSampleProducts = <Product>[
   Product(
     id: '0',
     name: 'Nike Radion',
-    description: 'Crazy shoe',
-    categoryId: null,
-    price: 3000.0,
+    seller: 'Yamin',
+    description: 'Crazy shoe',    
+    initialPrice: 3000.0,
     createdAt: DateTime(2022, 1, 23),
-    mainImage: 'https://freepngimg.com/thumb/categories/627.png',
+    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
     images: <String>[
-      'https://freepngimg.com/thumb/categories/627.png'
-    ]
+      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
+    ],
+    isAvailable: true
   ),
   Product(
     id: '1',
     name: 'Puma Insidiator',
-    description: 'Amazing shoe',
-    categoryId: null,
-    price: 3000.0,
+    seller: 'Yamin',
+    description: 'Amazing shoe',    
+    initialPrice: 3000.0,
     createdAt: DateTime(2022, 1, 21),
-    mainImage: 'https://freepngimg.com/thumb/categories/627.png',
+    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
     images: <String>[
-      'https://freepngimg.com/thumb/categories/627.png'
-    ]
+      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
+    ],
+    isAvailable: true
   ),
   Product(
     id: '0',
     name: 'Nike Radion',
-    description: 'Crazy shoe',
-    categoryId: null,
-    price: 3000.0,
+    seller: 'Yamin',
+    description: 'Crazy shoe',    
+    initialPrice: 3000.0,
     createdAt: DateTime(2022, 1, 23),
-    mainImage: 'https://freepngimg.com/thumb/categories/627.png',
+    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
     images: <String>[
-      'https://freepngimg.com/thumb/categories/627.png'
-    ]
+      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
+    ],
+    isAvailable: true
   ),
   Product(
     id: '1',
     name: 'Puma Insidiator',
-    description: 'Amazing shoe',
-    categoryId: null,
-    price: 3000.0,
+    seller: 'Yamin',
+    description: 'Amazing shoe',    
+    initialPrice: 3000.0,
     createdAt: DateTime(2022, 1, 21),
-    mainImage: 'https://freepngimg.com/thumb/categories/627.png',
+    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
     images: <String>[
-      'https://freepngimg.com/thumb/categories/627.png'
-    ]
+      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
+    ],
+    isAvailable: true
   ),
   Product(
     id: '0',
     name: 'Nike Radion',
-    description: 'Crazy shoe',
-    categoryId: null,
-    price: 3000.0,
+    seller: 'Yamin',
+    description: 'Crazy shoe',    
+    initialPrice: 3000.0,
     createdAt: DateTime(2022, 1, 23),
-    mainImage: 'https://freepngimg.com/thumb/categories/627.png',
+    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
     images: <String>[
-      'https://freepngimg.com/thumb/categories/627.png'
-    ]
+      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
+    ],
+    isAvailable: true
   ),
   Product(
     id: '1',
     name: 'Puma Insidiator',
-    description: 'Amazing shoe',
-    categoryId: null,
-    price: 3000.0,
+    seller: 'Yamin',
+    description: 'Amazing shoe',    
+    initialPrice: 3000.0,
     createdAt: DateTime(2022, 1, 21),
-    mainImage: 'https://freepngimg.com/thumb/categories/627.png',
+    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
     images: <String>[
-      'https://freepngimg.com/thumb/categories/627.png'
-    ]
+      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
+    ],
+    isAvailable: true
   )
 ];
