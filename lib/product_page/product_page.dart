@@ -81,7 +81,7 @@ class _ProductPageState extends State<ProductPage> {
                           text: product.name.toUpperCase(),
                           style: theme.textTheme.headline5,
                           pauseAfterRound: const Duration(milliseconds: 5000)
-                        ),
+                        )
                       ),
 
                       _buildSizeInfo(),

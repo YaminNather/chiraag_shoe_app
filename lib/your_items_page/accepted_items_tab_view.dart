@@ -25,7 +25,7 @@ class _AcceptedItemsTabViewState extends State<AcceptedItemsTabView> {
         
         if(item.order!.status == OrderStatus.verifying)
           return _buildVerifyingItem(item);
-        else if(item.order!.status == OrderStatus.delivering)
+        else if(item.order!.status == OrderStatus.checkedOut)
           return _buildDeliveringItem(item);
         else
           return _buildDeliveredItem(item);

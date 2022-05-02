@@ -1,7 +1,11 @@
+import 'package:chiraag_shoe_app/checkout_page/checkout_page.dart';
+import 'package:chiraag_shoe_app/checkout_page/complete_checkout.dart';
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:chiraag_shoe_app/injector.dart';
 import 'package:chiraag_shoe_app/product_page/product_page.dart';
 import 'package:flutter/material.dart';
+
+import '../order_page/order_page.dart';
 
 class OrdersPage extends StatefulWidget {
   const OrdersPage({ Key? key }) : super(key: key);
@@ -15,18 +19,7 @@ class _OrdersPageState extends State<OrdersPage> {
   void initState() {
     super.initState();
 
-    Future<void> asyncPart() async {
-      final List<Order> orders = await _orderServices.getOrders();
-      
-      setState(
-        () {
-          _orders = orders;
-          _isLoading = false;
-        }
-      );
-    }
-
-    asyncPart();
+    _fetchOrders();
   }
 
   @override
@@ -54,10 +47,14 @@ class _OrdersPageState extends State<OrdersPage> {
           
           if(order.status == OrderStatus.verifying)
             return _buildVerifyingItem(order);
-          else if(order.status == OrderStatus.delivering)
+          if(order.status == OrderStatus.verified)
+            return _buildVerifiedItem(order);
+          else if(order.status == OrderStatus.checkedOut)
             return _buildDeliveringItem(order);
-          else
+          else if(order.status == OrderStatus.delivered)
             return _buildDeliveredItem(order);
+          else
+            throw Exception();
         },
         separatorBuilder: (context, index) => const Divider(thickness: 2.0)
       )
@@ -65,7 +62,54 @@ class _OrdersPageState extends State<OrdersPage> {
   }    
 
   Widget _buildVerifyingItem(final Order order) {
-    return _buildItem(order, status: const Text('Item being verified') );
+    return _buildItem(order, status: const Text('Item being verified'));
+  }  
+
+  Widget _buildVerifiedItem(final Order order) {
+    return _buildItem(
+      order,
+      status: const Text('Verified'),
+      trailing: ElevatedButton(
+        child: const Text('Checkout'),
+        onPressed: () async {          
+          MaterialPageRoute route = MaterialPageRoute(builder: (context) => CheckoutPage(order));
+          await Navigator.of(context).push(route);
+        }
+      )
+    );
+  }
+
+  void _showPaymentSuccessMessage() {
+    final SnackBar snackBar = SnackBar(
+      content: Row(
+        children: const <Widget>[
+          Icon(Icons.check, color: Colors.green),
+
+          SizedBox(width: 16.0),
+
+          Text('Payment Success!')
+        ]
+      )
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void _showPaymentFailedMessage() {
+    final ThemeData theme = Theme.of(context);
+
+    final SnackBar snackBar = SnackBar(
+      content: Row(
+        children: <Widget>[
+          Icon(Icons.error_outline, color: theme.colorScheme.error),
+
+          const SizedBox(width: 16.0),
+
+          Text('Payment Failed!', style: TextStyle(color: theme.colorScheme.error))
+        ]
+      )
+    );
+    
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Widget _buildDeliveringItem(final Order order) {
@@ -82,18 +126,30 @@ class _OrdersPageState extends State<OrdersPage> {
     );
   }
 
-  Widget _buildItem(final Order order, {required final Widget status}) {
+  Widget _buildItem(final Order order, {required final Widget status, final Widget? trailing}) {
     return ListTile(
       leading: Image(image: NetworkImage(order.product.mainImage)),
       title:  Text(order.product.name),
       subtitle: status,
+      trailing: trailing,
       onTap: () {
-        MaterialPageRoute route = MaterialPageRoute(builder: (context) => ProductPage(id: order.product.id));
+        MaterialPageRoute route = MaterialPageRoute(builder: (context) => OrderPage(order.product.id));
         Navigator.of(context).push(route);
       }
     );
   }
-
+  
+  Future<void> _fetchOrders() async {
+    setState(() => _isLoading = true);
+    final List<Order> orders = await _orderServices.getOrders();
+    
+    setState(
+      () {
+        _orders = orders;
+        _isLoading = false;
+      }
+    );
+  }
 
 
   bool _isLoading = true;
