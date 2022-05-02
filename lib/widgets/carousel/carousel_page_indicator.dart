@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:chiraag_shoe_app/widgets/carousel/carousel_controller.dart';
 import 'package:flutter/material.dart';
 
 class CarouselPageIndicator extends StatefulWidget {
@@ -15,7 +16,7 @@ class CarouselPageIndicator extends StatefulWidget {
 
 
 
-  final PageController controller;
+  final CarouselController controller;
   final int pagesCount;
   final int maxCircleCount;
 }
@@ -60,19 +61,10 @@ class _CarouselPageIndicatorState extends State<CarouselPageIndicator> {
         )
       ),
     );
-  }  
-
-  int _getCurrentPage() {
-    try {
-      return _controller.page!.round();
-    }
-    catch(e) {
-      return 0;
-    }
   }
 
   int _getHighlightedCircleIndex() {
-    final int currentPage = _getCurrentPage();
+    final int currentPage = _controller.getCurrentPage();
     double highlightedCircleIndexDouble = (currentPage / widget.pagesCount);
     highlightedCircleIndexDouble *= widget.maxCircleCount - 1;    
 
@@ -96,5 +88,5 @@ class _CarouselPageIndicatorState extends State<CarouselPageIndicator> {
   }
 
 
-  late PageController _controller;
+  late CarouselController _controller;
 }

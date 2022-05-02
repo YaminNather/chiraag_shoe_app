@@ -1,6 +1,7 @@
 import 'package:chiraag_shoe_app/add_product_page/add_product_page.dart';
 import 'package:chiraag_shoe_app/product_page/product_page.dart';
 import 'package:chiraag_shoe_app/widgets/carousel/carousel.dart';
+import 'package:chiraag_shoe_app/widgets/carousel/carousel_page_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:chiraag_shoe_app/current_bids_page/bids_page.dart';
@@ -8,6 +9,7 @@ import 'package:chiraag_shoe_app/orders_page/orders_page.dart';
 import 'package:chiraag_shoe_app/your_items_page/your_items_page.dart';
 import 'package:chiraag_shoe_app/product_search_page/product_search_page.dart';
 import '../injector.dart';
+import '../widgets/carousel/carousel_controller.dart';
 import '../widgets/product_card.dart';
 import '../widgets/compact_product_card/compact_product_card.dart';
 
@@ -94,6 +96,7 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: screenSize.width - 64.0,
               child: Carousel(
+                controller: _latestArrivalsCarouselController,
                 itemCount: latestArrivals.length,
                 itemBuilder: (context, index) {
                   return Padding(
@@ -102,6 +105,15 @@ class _HomePageState extends State<HomePage> {
                   );
                 }
               )
+            ),
+
+            const SizedBox(height: 8.0),
+
+            Center(
+              child: CarouselPageIndicator(
+                controller: _latestArrivalsCarouselController,
+                pagesCount: latestArrivals.length
+              ),
             ),
 
             const SizedBox(height: 32.0),
@@ -206,6 +218,8 @@ class _HomePageState extends State<HomePage> {
 
   final Inventory _inventory = getIt<Client>().inventory();
   final BidServices _bidServices = getIt<Client>().bidServices();
+
+  final CarouselController _latestArrivalsCarouselController = CarouselController();
 }
 
 

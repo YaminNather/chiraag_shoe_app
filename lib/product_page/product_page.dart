@@ -62,10 +62,7 @@ class _ProductPageState extends State<ProductPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                SizedBox(
-                  height: 256.0,
-                  child: ImagesCarousel(product: product)
-                ),
+                ImagesCarousel(product: product),
 
                 const SizedBox(height: 32.0),
 
@@ -112,6 +109,7 @@ class _ProductPageState extends State<ProductPage> {
     return RichText(
       text: TextSpan(
         text: 'Size: ',
+        style: theme.textTheme.bodyText2,
         children: <TextSpan>[
           TextSpan(text: '10', style: theme.textTheme.headline6)
         ]
