@@ -53,27 +53,13 @@ class _OrderPageState extends State<OrderPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         SizedBox(
-          height: 256.0, 
+          height: 320.0,
           child: ImagesCarousel(product: _order.product)
         ),
         
         const SizedBox(height: 32.0),
 
-        SizedBox(
-          height: 40.0,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return Marquee(
-                text: _order.product.name.toUpperCase(),
-                style: theme.textTheme.headline5,
-                pauseAfterRound: const Duration(milliseconds: 5000),
-                blankSpace: constraints.maxWidth,
-                velocity: 200.0,
-                startPadding: 16.0,
-              );
-            }
-          ),
-        ),
+        _buildTitle(),
 
         const SizedBox(height: 16.0),
 
@@ -83,14 +69,32 @@ class _OrderPageState extends State<OrderPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text('Order Progress', style: theme.textTheme.headline6),
-
                 Expanded(child: OrderProgressStepper(_order)),
               ],
             ),
           ),
         )
       ]
+    );
+  }
+
+  Widget _buildTitle() {
+    final ThemeData theme = Theme.of(context);
+
+    return SizedBox(
+      height: 40.0,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Marquee(
+            text: _order.product.name.toUpperCase(),
+            style: theme.textTheme.headline5,
+            pauseAfterRound: const Duration(milliseconds: 5000),
+            blankSpace: constraints.maxWidth,
+            velocity: 200.0,
+            startPadding: 16.0,
+          );
+        }
+      )
     );
   }
 
