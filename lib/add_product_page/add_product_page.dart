@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:chiraag_shoe_app/add_product_page/add_images_page.dart';
+import 'package:chiraag_shoe_app/widgets/carousel/carousel.dart';
 import 'package:flutter/material.dart';
 
 class AddProductPage extends StatefulWidget {
@@ -33,9 +37,31 @@ class _AddProductPageState extends State<AddProductPage> {
 
           const SizedBox(height: 32.0),
 
-          TextField(controller: _priceFieldController, decoration: const InputDecoration(hintText: 'Price'))
+          TextField(
+            controller: _priceFieldController, 
+            decoration: const InputDecoration(hintText: 'Price'),
+            keyboardType: TextInputType.number
+          ),
+
+          const SizedBox(height: 16.0),
+
+          ElevatedButton(child: const Text('Add Main Image'), onPressed: () {}),
+
+          const SizedBox(height: 16.0),
+
+          _buildAddImageButton()
         ]
-      ),
+      )
+    );
+  }
+
+  Widget _buildAddImageButton() {
+    return ElevatedButton(
+      child: const Text('Add Image'), 
+      onPressed: () {
+        MaterialPageRoute route = MaterialPageRoute(builder: (context) => const AddImagesPage(images: <File>[]));
+        Navigator.of(context).push(route);
+      }
     );
   }
 

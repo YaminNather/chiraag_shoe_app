@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
 
             SizedBox(
               height: screenSize.width - 64.0,
-              child: Carousel(
+              child: Carousel.builder(
                 controller: _latestArrivalsCarouselController,
                 itemCount: latestArrivals.length,
                 itemBuilder: (context, index) {

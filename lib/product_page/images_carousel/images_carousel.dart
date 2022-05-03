@@ -22,7 +22,7 @@ class ImagesCarousel extends StatelessWidget {
       children: <Widget>[
         SizedBox(
           height: 256.0,
-          child: Carousel(
+          child: Carousel.builder(
             controller: _controller,
             itemCount: images.length,
             itemBuilder: (context, index) {
