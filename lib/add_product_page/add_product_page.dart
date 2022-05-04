@@ -51,23 +51,35 @@ class _AddProductPageState extends State<AddProductPage> {
         final List<String> imageUrls = <String>[];
         for(int i = 0; i < images.length; i++) {
           final File image = images[i];
-          final StorageResponse<String> uploadResponse = await client.storage.from('default').upload(
+          final StorageResponse<String> uploadResponse = await client.storage.from('default-bucket').upload(
             'product_images/${path.basename(image.path)}',
-            image
+            image,
+            fileOptions: const FileOptions(upsert: true)
           );
           print("CustomLog: Image Upload Response: ${uploadResponse.data}");
 
           if(uploadResponse.error != null)
-            throw UploadProductImageToStorageError();
+            throw uploadResponse.error!;
 
-          imageUrls.add(uploadResponse.data!);
+          String imageUrl = 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/${uploadResponse.data}';
+          imageUrls.add(imageUrl);
         }
 
         final String name = _nameFieldController.text;
-        final double price = double.parse(_priceFieldController.text);
+        final double initialPrice = double.parse(_priceFieldController.text);
         final String description = _descriptionFieldController.text;
         final int size = int.parse(_sizeFieldController.text);
-        await _inventory.addProduct(name, price, description, size);
+        
+        final String mainImage = imageUrls[0];
+        final List<String>? uploadingImages;
+        if(imageUrls.length > 1)
+          uploadingImages = imageUrls.sublist(1, imageUrls.length);
+        else
+          uploadingImages = null;
+        
+        await _inventory.addProduct(name, initialPrice, description, size, mainImage, uploadingImages);
+        
+        Navigator.of(context).pop();
       }
     );
   }
@@ -130,7 +142,7 @@ class _AddProductPageState extends State<AddProductPage> {
     );
   }
 
-  Future<void> _showErrorDialog(String error) async {    
+  Future<void> _showErrorDialog(String error) async {
     await showDialog(
       context: context, 
       builder: (context) {
@@ -156,4 +168,11 @@ class _AddProductPageState extends State<AddProductPage> {
   final Inventory _inventory = getIt<Client>().inventory();
 }  
 
-class UploadProductImageToStorageError extends Error {}
+class UploadProductImageToStorageError extends Error {
+  UploadProductImageToStorageError({this.message});
+
+  @override
+  String toString() => 'UploadProductImageToStorageError: ${message ?? ''}';
+
+  final String? message;
+}
