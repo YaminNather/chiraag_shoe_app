@@ -2,8 +2,10 @@ import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:chiraag_shoe_app/choose_bid_page/final_acceptance_dialog.dart';
 import 'package:chiraag_shoe_app/widgets/loading_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 
 import '../injector.dart';
+import '../product_page/images_carousel/images_carousel.dart';
 
 class ChooseBidPage extends StatefulWidget {
   const ChooseBidPage(this.product, { Key? key }) : super(key: key);
@@ -48,11 +50,41 @@ class _ChooseBidPageState extends State<ChooseBidPage> {
     if(_isLoading)
       return const LoadingIndicator();
 
-    final List<Bid> bids = _bids!;
+    final ThemeData theme = Theme.of(context);
 
-    return ListView.builder(
-      itemCount: 5,
-      itemBuilder: (context, index) => _buildListTile(bids[index])
+    final Product product = _product!;
+    final List<Bid> bids = _bids!;    
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        ImagesCarousel(product: product),
+
+        const SizedBox(height: 32.0),
+
+        SizedBox(
+          height: 40.0,
+          child: Marquee(
+            text: product.name.toUpperCase(),
+            style: theme.textTheme.headline5,
+            pauseAfterRound: const Duration(milliseconds: 5000)
+          )
+        ),
+
+        const SizedBox(height: 32.0),
+
+        Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: Text('Bids', style: theme.textTheme.headline6),
+        ),
+
+        Expanded(
+          child: ListView.builder(
+            itemCount: bids.length,
+            itemBuilder: (context, index) => _buildListTile(bids[index])
+          )
+        )
+      ]
     );
   }
 

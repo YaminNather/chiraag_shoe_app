@@ -32,7 +32,8 @@ class App extends StatelessWidget {
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(elevation: 8.0)
       ),      
       // home: const LoginPage()
-      home: const LoginOrAuthenticationRedirector()      
+      // home: const LoginOrAuthenticationRedirector()
+      home: const ChooseBidPage('0')
     );
   }
 
