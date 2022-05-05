@@ -178,7 +178,6 @@ class _ProductPageState extends State<ProductPage> {
     final ThemeData theme = Theme.of(context);
 
     final Product product = _product!;
-    final List<Bid> bids = _bids!;
 
     Future<void> onPressed() async {
       await _bidServices().placeBid(product.id, double.parse(_amountFieldController.text));

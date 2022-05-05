@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:path/path.dart' as path;
-import 'package:http/http.dart' as http;
 import 'package:chiraag_shoe_app/add_product_page/add_images_page.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase/supabase.dart';

@@ -1,11 +1,8 @@
-import 'package:chiraag_shoe_app/checkout_page/complete_checkout.dart';
 import 'package:chiraag_shoe_app/product_page/images_carousel/images_carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
-
-import '../injector.dart';
 import 'checkout_page_controller.dart';
 
 class SummaryPage extends StatefulWidget {
@@ -166,8 +163,5 @@ class _SummaryPageState extends State<SummaryPage> {
         onPressed: onPressed
       )
     );
-  }
-
-  
-  final Client _client = getIt<Client>();  
+  }  
 }

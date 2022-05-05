@@ -1,8 +1,6 @@
 import 'package:chiraag_shoe_app/checkout_page/checkout_page.dart';
-import 'package:chiraag_shoe_app/checkout_page/complete_checkout.dart';
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:chiraag_shoe_app/injector.dart';
-import 'package:chiraag_shoe_app/product_page/product_page.dart';
 import 'package:flutter/material.dart';
 
 import '../order_page/order_page.dart';
@@ -79,38 +77,38 @@ class _OrdersPageState extends State<OrdersPage> {
     );
   }
 
-  void _showPaymentSuccessMessage() {
-    final SnackBar snackBar = SnackBar(
-      content: Row(
-        children: const <Widget>[
-          Icon(Icons.check, color: Colors.green),
+  // void _showPaymentSuccessMessage() {
+  //   final SnackBar snackBar = SnackBar(
+  //     content: Row(
+  //       children: const <Widget>[
+  //         Icon(Icons.check, color: Colors.green),
 
-          SizedBox(width: 16.0),
+  //         SizedBox(width: 16.0),
 
-          Text('Payment Success!')
-        ]
-      )
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
+  //         Text('Payment Success!')
+  //       ]
+  //     )
+  //   );
+  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  // }
 
-  void _showPaymentFailedMessage() {
-    final ThemeData theme = Theme.of(context);
+  // void _showPaymentFailedMessage() {
+  //   final ThemeData theme = Theme.of(context);
 
-    final SnackBar snackBar = SnackBar(
-      content: Row(
-        children: <Widget>[
-          Icon(Icons.error_outline, color: theme.colorScheme.error),
+  //   final SnackBar snackBar = SnackBar(
+  //     content: Row(
+  //       children: <Widget>[
+  //         Icon(Icons.error_outline, color: theme.colorScheme.error),
 
-          const SizedBox(width: 16.0),
+  //         const SizedBox(width: 16.0),
 
-          Text('Payment Failed!', style: TextStyle(color: theme.colorScheme.error))
-        ]
-      )
-    );
+  //         Text('Payment Failed!', style: TextStyle(color: theme.colorScheme.error))
+  //       ]
+  //     )
+  //   );
     
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
+  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  // }
 
   Widget _buildDeliveringItem(final Order order) {
     return _buildItem(

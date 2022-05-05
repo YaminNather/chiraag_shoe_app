@@ -1,7 +1,6 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:flutter/material.dart';
 
-import '../../injector.dart';
 import '../../product_page/product_page.dart';
 
 class AcceptedItemsTabView extends StatefulWidget {

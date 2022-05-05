@@ -7,7 +7,6 @@ import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:chiraag_shoe_app/current_bids_page/bids_page.dart';
 import 'package:chiraag_shoe_app/orders_page/orders_page.dart';
 import 'package:chiraag_shoe_app/your_items_page/your_items_page.dart';
-import 'package:chiraag_shoe_app/product_search_page/product_search_page.dart';
 import '../injector.dart';
 import '../widgets/carousel/carousel_controller.dart';
 import '../widgets/product_card.dart';
@@ -53,14 +52,14 @@ class _HomePageState extends State<HomePage> {
     return AppBar(title: const Text('Home'));
   }
 
-  Widget _buildSearchButton() {
-    void onPressed() {
-      final MaterialPageRoute route = MaterialPageRoute(builder: (context) => const ProductSearchPage());
-      Navigator.of(context).push(route);
-    }
+  // Widget _buildSearchButton() {
+  //   void onPressed() {
+  //     final MaterialPageRoute route = MaterialPageRoute(builder: (context) => const ProductSearchPage());
+  //     Navigator.of(context).push(route);
+  //   }
 
-    return IconButton(icon: const Icon(Icons.search), onPressed: onPressed);
-  }
+  //   return IconButton(icon: const Icon(Icons.search), onPressed: onPressed);
+  // }
 
   Widget _buildBody() {
     if(_isLoading)

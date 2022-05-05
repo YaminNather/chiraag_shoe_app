@@ -1,9 +1,6 @@
 import 'login_or_authentication_redirector/login_or_authentication_redirector.dart';
-import 'package:chiraag_shoe_app/product_page/product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'products_page/products_page.dart';
 
 class App extends StatelessWidget {
   const App({ Key? key }) : super(key: key);

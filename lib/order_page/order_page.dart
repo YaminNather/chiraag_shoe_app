@@ -44,8 +44,6 @@ class _OrderPageState extends State<OrderPage> {
   PreferredSizeWidget _buildAppBar() => AppBar(title: const Text('Order Details'));
 
   Widget _buildBody() {
-    final ThemeData theme = Theme.of(context);
-
     if(_isLoading)
       return const LoadingIndicator();
 

@@ -99,8 +99,6 @@ class _BidsPageState extends State<BidsPage> {
   }
 
   Widget _buildAcceptedBidItem(final BidWithProduct bid) {
-    final ThemeData theme = Theme.of(context);
-
     return _buildItem(
       bid,
       bidStatus: const Text('Bid Accepted', style: TextStyle(color: Colors.green))
