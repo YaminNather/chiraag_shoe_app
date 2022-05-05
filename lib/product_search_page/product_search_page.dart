@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../product_page/product_page.dart';
 import '../widgets/compact_product_card/compact_product_card.dart';
-import 'product_card.dart';
 
 class ProductSearchPage extends StatefulWidget {
   const ProductSearchPage({ Key? key }) : super(key: key);
@@ -121,17 +120,17 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
 
   final Inventory _inventory = getIt<Client>().inventory();  
 
-  static Product product = Product(
-    id: '0',
-    name: 'Nike Radion',
-    seller: 'Yamin',
-    description: 'Crazy shoe',    
-    initialPrice: 3000.0,
-    createdAt: DateTime(2022, 1, 23),
-    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
-    images: <String>[
-      'https://freepngimg.com/thumb/categories/627.png'
-    ],
-    isAvailable: true
-  );
+  // static Product product = Product(
+  //   id: '0',
+  //   name: 'Nike Radion',
+  //   seller: 'Yamin',
+  //   description: 'Crazy shoe',    
+  //   initialPrice: 3000.0,
+  //   createdAt: DateTime(2022, 1, 23),
+  //   mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
+  //   images: <String>[
+  //     'https://freepngimg.com/thumb/categories/627.png'
+  //   ],
+  //   isAvailable: true
+  // );
 }

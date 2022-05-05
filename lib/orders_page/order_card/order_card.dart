@@ -1,9 +1,5 @@
-import 'dart:math';
-
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:flutter/material.dart';
-
-import '../../product_page/product_page.dart';
 
 class OrderCard extends StatelessWidget {
   const OrderCard(this.order, { Key? key }) : super(key: key);

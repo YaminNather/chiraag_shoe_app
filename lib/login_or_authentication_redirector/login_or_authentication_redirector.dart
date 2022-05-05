@@ -1,6 +1,5 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:chiraag_shoe_app/logged_in_page/logged_in_page.dart';
-import '../home_page/home_page.dart';
 import '../login_page/login_page.dart';
 import 'package:flutter/material.dart';
 

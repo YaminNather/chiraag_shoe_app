@@ -18,8 +18,9 @@ class ImagesCarouselPageIndicatorItem extends StatelessWidget {
       imageOpacity = 0.5;
     }
 
-    return DecoratedBox(
+    return Container(      
       decoration: BoxDecoration(border: Border.all(width: 2.0, color: borderColor)),
+      padding: const EdgeInsets.all(8.0),
       child: Opacity(
         opacity: imageOpacity,
         child: Image(image: imageProvider)
