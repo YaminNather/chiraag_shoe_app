@@ -27,21 +27,23 @@ class _LoginPageState extends State<LoginPage> {
     if(_isLoading)
       return const Center(child: CircularProgressIndicator.adaptive());
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(    
-        children: <Widget>[
-          Text('Hypestation', style: theme.textTheme.headline5),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(    
+          children: <Widget>[
+            Text('Hypestation', style: theme.textTheme.headline5),
 
-          const SizedBox(height: 32.0),
+            const SizedBox(height: 32.0),
 
-          _buildForm(),
+            _buildForm(),
 
-          const SizedBox(height: 32.0),
+            const SizedBox(height: 32.0),
 
-          _buildError()
-        ]
-      )
+            _buildError()
+          ]
+        )
+      ),
     );
   }
 
@@ -52,11 +54,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,          
         children: <Widget>[
-          _buildUsernameField(),
-
-          const SizedBox(height: 16.0),
-
-          _buildEmailField(),
+          _buildUsernameAndEmailField(),
           
           const SizedBox(height: 16.0),
           
@@ -88,47 +86,36 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildUsernameField() {
-    String? validator(String? text) {
-      if(text == null)
-        throw Error();
+  // Widget _buildUsernameField() {
+  //   String? validator(String? text) {
+  //     if(text == null)
+  //       throw Error();
 
-      final RegExp regExp = RegExp(r'[!@#$%^&*()+\-=\[\]{};'':"\\|,.<>\/?]');
-      if(text.contains(regExp))
-        return 'Username cannot have special characters, except for _';
+  //     final RegExp regExp = RegExp(r'[!@#$%^&*()+\-=\[\]{};'':"\\|,.<>\/?]');
+  //     if(text.contains(regExp))
+  //       return 'Username cannot have special characters, except for _';
 
-      if(text.contains(' '))
-        return 'Username cannot have spaces, use _ instead';
+  //     if(text.contains(' '))
+  //       return 'Username cannot have spaces, use _ instead';
       
-      if(text.length < 5)
-        return 'Username must have atleast 5 characters';
+  //     if(text.length < 5)
+  //       return 'Username must have atleast 5 characters';
 
-      return null;
-    }
+  //     return null;
+  //   }
 
+  //   return TextFormField(
+  //     controller: _usernameController,
+  //     decoration: const InputDecoration(hintText: 'Username'),
+  //     validator: validator,
+  //     autovalidateMode: AutovalidateMode.onUserInteraction
+  //   );
+  // }
+
+  Widget _buildUsernameAndEmailField() {
     return TextFormField(
-      controller: _usernameController,
-      decoration: const InputDecoration(hintText: 'Username'),
-      validator: validator,
-      autovalidateMode: AutovalidateMode.onUserInteraction
-    );
-  }
-
-  Widget _buildEmailField() {
-    String? validator(String? text) {
-      if(text == null)
-        throw Error();
-
-      if(!EmailValidator.validate(text))
-        return 'Please enter a valid email';
-
-      return null;
-    }
-
-    return TextFormField(
-      controller: _emailController, 
-      decoration: const InputDecoration(hintText: 'Email'),
-      validator: validator,
+      controller: _usernameOrEmailFieldController, 
+      decoration: const InputDecoration(hintText: 'Username or Email'),
       autovalidateMode: AutovalidateMode.onUserInteraction
     );
   }
@@ -148,29 +135,29 @@ class _LoginPageState extends State<LoginPage> {
       controller: _passwordController, 
       decoration: const InputDecoration(hintText: 'Password'),
       validator: validator,
-      autovalidateMode: AutovalidateMode.onUserInteraction
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      obscureText: true
     );
   }
 
   Widget _buildLoginButton() {
     Future<void> onPressed() async {
       try {
-        final String username = _usernameController.text;
-        final String email = _emailController.text;
         final String password = _passwordController.text;
 
         setState(() => _isLoading = true);
         
-        if(username.isNotEmpty)
-          await _authentication.loginWithUsername(username, password);
+        if(!_isEmailInField())
+          await _authentication.loginWithUsername(_usernameOrEmailFieldController.text, password);
         else
-          await _authentication.loginWithEmail(email, password);
+          await _authentication.loginWithEmail(_usernameOrEmailFieldController.text, password);
       }
       catch(e) {
         setState(
           () {
-            _isLoading = false;            
+            _isLoading = false;
             _error = 'Login failed';
+            print('CustomLog: $e');
           }
         );
         return;
@@ -203,6 +190,11 @@ class _LoginPageState extends State<LoginPage> {
 
   Authentication get _authentication => _client.authentication();
 
+  bool _isEmailInField() {
+    final String text = _usernameOrEmailFieldController.text;
+    
+    return EmailValidator.validate(text);
+  }
 
 
   bool _isLoading = false;
@@ -212,9 +204,8 @@ class _LoginPageState extends State<LoginPage> {
   
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  
+  final TextEditingController _usernameOrEmailFieldController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   
   final Client _client = getIt<Client>();

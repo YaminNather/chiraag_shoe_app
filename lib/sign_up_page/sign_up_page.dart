@@ -26,21 +26,23 @@ class _SignUpPageState extends State<SignUpPage> {
     if(_isLoading)
       return const Center(child: CircularProgressIndicator.adaptive());
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(    
-        children: <Widget>[
-          Text('Hypestation', style: theme.textTheme.headline5),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(    
+          children: <Widget>[
+            Text('Hypestation', style: theme.textTheme.headline5),
 
-          const SizedBox(height: 32.0),
+            const SizedBox(height: 32.0),
 
-          _buildForm(),
+            _buildForm(),
 
-          const SizedBox(height: 32.0),
+            const SizedBox(height: 32.0),
 
-          _buildError()
-        ]
-      )
+            _buildError()
+          ]
+        )
+      ),
     );
   }
 
@@ -127,7 +129,8 @@ class _SignUpPageState extends State<SignUpPage> {
     return TextFormField(
       controller: _passwordController, 
       decoration: const InputDecoration(hintText: 'Password'),
-      validator: validator
+      validator: validator,
+      obscureText: true
     );
   }
 

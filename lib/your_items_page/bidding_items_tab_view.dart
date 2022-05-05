@@ -1,4 +1,5 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
+import 'package:chiraag_shoe_app/choose_bid_page/choose_bid_page.dart';
 import 'package:flutter/material.dart';
 
 import '../product_page/product_page.dart';
@@ -30,7 +31,7 @@ class _BiddingItemsTabViewState extends State<BiddingItemsTabView> {
       title:  Text(item.product.name),
       subtitle: Text('Highest Bid: ${item.bid!.amount}'),
       onTap: () {
-        MaterialPageRoute route = MaterialPageRoute(builder: (context) => ProductPage(id: item.product.id));
+        MaterialPageRoute route = MaterialPageRoute(builder: (context) => ChooseBidPage(item.product.id));
         Navigator.of(context).push(route);
       }
     );
