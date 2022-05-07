@@ -1,8 +1,9 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:chiraag_shoe_app/your_items_page/bidding_items_tab_view.dart';
+import 'package:chiraag_shoe_app/your_items_page/your_items_page_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../injector.dart';
 import 'accepted_items_tab_view.dart';
 import 'added_items_tab_view.dart';
 
@@ -18,18 +19,7 @@ class _YourItemsPageState extends State<YourItemsPage> {
   void initState() {    
     super.initState();
 
-    Future<void> asyncPart() async {
-      final List<SoldItem> soldItems = await _inventory.getAllSellersProducts();
-
-      setState(
-        () {
-          _isLoading = false;
-          _soldItems = soldItems;
-        }
-      );
-    }
-
-    asyncPart();
+    _controller.loadData();
   }
 
   @override
@@ -44,31 +34,34 @@ class _YourItemsPageState extends State<YourItemsPage> {
   Widget _buildBody() {
     final ThemeData theme = Theme.of(context);
 
-    return DefaultTabController(
-      length: 3,
-      child: Column(
-        children: <Widget>[
-          TabBar(
-            labelColor: theme.textTheme.bodyText1!.color,
-            tabs: const <Tab>[
-              Tab(text: 'Added'),
-              
-              Tab(text: 'Bidding'),
-              
-              Tab(text: 'Accepted')
-            ]
-          ),
+    return Provider(
+      create: (context) => _controller,
+      child: DefaultTabController(
+        length: 3,
+        child: Column(
+          children: <Widget>[
+            TabBar(
+              labelColor: theme.textTheme.bodyText1!.color,
+              tabs: const <Tab>[
+                Tab(text: 'Added'),
+                
+                Tab(text: 'Bidding'),
+                
+                Tab(text: 'Accepted')
+              ]
+            ),
 
-          Expanded(
-            child: _buildTabBarView()
-          )
-        ]
-      )
+            Expanded(
+              child: _buildTabBarView()
+            )
+          ]
+        )
+      ),
     );
   }
 
   Widget _buildTabBarView() {
-    if(_isLoading)
+    if(_controller.isLoading)
       return const Center(child: CircularProgressIndicator());
 
     return TabBarView(
@@ -83,29 +76,34 @@ class _YourItemsPageState extends State<YourItemsPage> {
   }
 
   Widget _buildAddedItemsTabView() {
-    List<SoldItem> addedItems = List<SoldItem>.from(_soldItems!);
+    List<SoldItem> addedItems = List<SoldItem>.from(_controller.soldItems!);
     addedItems.removeWhere((element) => element.bid != null || element.order != null);
     
     return AddedItemsTabView(addedItems);
   }
   
   Widget _buildBiddingItemsTabView() {
-    List<SoldItem> biddingItems = List<SoldItem>.from(_soldItems!);
+    List<SoldItem> biddingItems = List<SoldItem>.from(_controller.soldItems!);
     biddingItems.removeWhere((element) => !(element.bid != null && element.order == null));
     
     return BiddingItemsTabView(biddingItems);
   }
   
   Widget _buildAcceptedItemsTabView() {
-    List<SoldItem> acceptedItems = List<SoldItem>.from(_soldItems!);
+    List<SoldItem> acceptedItems = List<SoldItem>.from(_controller.soldItems!);
     acceptedItems.removeWhere((element) => !(element.bid == null && element.order != null));
     
     return AcceptedItemsTabView(acceptedItems);
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+
+    super.dispose();
+  }
 
 
-  bool _isLoading = true;
-  List<SoldItem>? _soldItems;
-  final Inventory _inventory = getIt<Client>().inventory();
+
+  final YourItemsPageController _controller = YourItemsPageController();
 }

@@ -1,13 +1,9 @@
+import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:flutter/material.dart';
 
-class FinalAcceptanceDialog extends StatefulWidget {
-  const FinalAcceptanceDialog({ Key? key }) : super(key: key);
+class FinalAcceptanceDialog extends StatelessWidget {
+  const FinalAcceptanceDialog(this.bid, { Key? key }) : super(key: key);
 
-  @override
-  State<FinalAcceptanceDialog> createState() => _FinalAcceptanceDialogState();  
-}
-
-class _FinalAcceptanceDialogState extends State<FinalAcceptanceDialog> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -18,14 +14,14 @@ class _FinalAcceptanceDialogState extends State<FinalAcceptanceDialog> {
         text: TextSpan(
           text: 'Are you sure you want to accept this bid of',
           style: theme.textTheme.bodyMedium,
-          children: const <TextSpan>[
-            TextSpan(text: ' Rs 90,000', style: TextStyle(fontWeight: FontWeight.bold)),
+          children: <TextSpan>[
+            TextSpan(text: ' Rs ${bid.amount}', style: const TextStyle(fontWeight: FontWeight.bold)),
 
-            TextSpan(text: ' by'),
+            const TextSpan(text: ' by'),
 
-            TextSpan(text: ' Yamin', style: TextStyle(fontWeight: FontWeight.bold)),
+            TextSpan(text: ' ${bid.bidder.username}', style: const TextStyle(fontWeight: FontWeight.bold)),
 
-            TextSpan(text: '?')
+            const TextSpan(text: '?')
           ]
         )
       ),
@@ -36,4 +32,7 @@ class _FinalAcceptanceDialogState extends State<FinalAcceptanceDialog> {
       ]
     );
   }
+
+
+  final Bid bid;
 }

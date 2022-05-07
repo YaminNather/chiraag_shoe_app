@@ -263,6 +263,8 @@ class _ProductPageState extends State<ProductPage> {
 
   Inventory _inventory() => _client.inventory();
 
+
+
   bool _isLoading = true;
 
   Product? _product;

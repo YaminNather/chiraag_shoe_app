@@ -7,17 +7,17 @@ import 'package:marquee/marquee.dart';
 import '../widgets/loading_indicator.dart';
 import 'order_progress_stepper.dart';
 
-class OrderPage extends StatefulWidget {
-  const OrderPage(this.product, { Key? key }) : super(key: key);
+class SellerOrderPage extends StatefulWidget {
+  const SellerOrderPage(this.product, { Key? key }) : super(key: key);
 
   @override
-  State<OrderPage> createState() => _OrderPageState();
+  State<SellerOrderPage> createState() => _SellerOrderPageState();
 
 
   final String product;
 }
 
-class _OrderPageState extends State<OrderPage> {
+class _SellerOrderPageState extends State<SellerOrderPage> {
   @override
   void initState() {
     super.initState();
@@ -44,10 +44,10 @@ class _OrderPageState extends State<OrderPage> {
   PreferredSizeWidget _buildAppBar() => AppBar(title: const Text('Order Details'));
 
   Widget _buildBody() {
-    final ThemeData theme = Theme.of(context);
-
     if(_isLoading)
       return const LoadingIndicator();
+          
+    final ThemeData theme = Theme.of(context);
 
     return SingleChildScrollView(
       child: Column(
@@ -71,10 +71,10 @@ class _OrderPageState extends State<OrderPage> {
               children: <Widget>[
                 RichText(
                   text: TextSpan(
-                    text: 'Sold by:',
+                    text: 'Purchased by:',
                     style: theme.textTheme.bodyMedium,
                     children: <TextSpan>[
-                      TextSpan(text: ' ${_order.product.seller.username}', style: theme.textTheme.headline6)
+                      TextSpan(text: ' ${_order.purchasedBy.username}', style: theme.textTheme.headline6)
                     ]
                   )
                 ),

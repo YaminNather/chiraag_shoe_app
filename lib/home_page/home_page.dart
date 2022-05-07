@@ -1,12 +1,12 @@
-import 'package:chiraag_shoe_app/add_product_page/add_product_page.dart';
-import 'package:chiraag_shoe_app/product_page/product_page.dart';
-import 'package:chiraag_shoe_app/widgets/carousel/carousel.dart';
-import 'package:chiraag_shoe_app/widgets/carousel/carousel_page_indicator.dart';
+import '../add_product_page/add_product_page.dart';
+import '../product_page/product_page.dart';
+import '../widgets/carousel/carousel.dart';
+import '../widgets/carousel/carousel_page_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
-import 'package:chiraag_shoe_app/current_bids_page/bids_page.dart';
-import 'package:chiraag_shoe_app/orders_page/orders_page.dart';
-import 'package:chiraag_shoe_app/your_items_page/your_items_page.dart';
+import '../current_bids_page/bids_page.dart';
+import '../orders_page/orders_page.dart';
+import '../your_items_page/your_items_page.dart';
 import '../injector.dart';
 import '../widgets/carousel/carousel_controller.dart';
 import '../widgets/product_card.dart';
@@ -211,6 +211,7 @@ class _HomePageState extends State<HomePage> {
   }
 
 
+
   bool _isLoading = true;
   List<Product>? _latestArrivals;
   List<BidWithProduct>? _bids;
@@ -222,83 +223,83 @@ class _HomePageState extends State<HomePage> {
 }
 
 
-List<Product> frontendSampleProducts = <Product>[
-  Product(
-    id: '0',
-    name: 'Nike Air Vapor Max 2020 FK',
-    seller: 'Yamin',
-    description: 'Crazy shoe',    
-    initialPrice: 3000.0,
-    createdAt: DateTime(2022, 1, 23),
-    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
-    images: <String>[
-      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
-    ],
-    isAvailable: true
-  ),
-  Product(
-    id: '1',
-    name: 'Puma Insidiator',
-    seller: 'Yamin',
-    description: 'Amazing shoe',    
-    initialPrice: 3000.0,
-    createdAt: DateTime(2022, 1, 21),
-    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
-    images: <String>[
-      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
-    ],
-    isAvailable: true
-  ),
-  Product(
-    id: '0',
-    name: 'Nike Radion',
-    seller: 'Yamin',
-    description: 'Crazy shoe',    
-    initialPrice: 3000.0,
-    createdAt: DateTime(2022, 1, 23),
-    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
-    images: <String>[
-      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
-    ],
-    isAvailable: true
-  ),
-  Product(
-    id: '1',
-    name: 'Puma Insidiator',
-    seller: 'Yamin',
-    description: 'Amazing shoe',    
-    initialPrice: 3000.0,
-    createdAt: DateTime(2022, 1, 21),
-    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
-    images: <String>[
-      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
-    ],
-    isAvailable: true
-  ),
-  Product(
-    id: '0',
-    name: 'Nike Radion',
-    seller: 'Yamin',
-    description: 'Crazy shoe',    
-    initialPrice: 3000.0,
-    createdAt: DateTime(2022, 1, 23),
-    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
-    images: <String>[
-      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
-    ],
-    isAvailable: true
-  ),
-  Product(
-    id: '1',
-    name: 'Puma Insidiator',
-    seller: 'Yamin',
-    description: 'Amazing shoe',    
-    initialPrice: 3000.0,
-    createdAt: DateTime(2022, 1, 21),
-    mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
-    images: <String>[
-      'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
-    ],
-    isAvailable: true
-  )
-];
+// List<Product> frontendSampleProducts = <Product>[
+//   Product(
+//     id: '0',
+//     name: 'Nike Air Vapor Max 2020 FK',
+//     seller: 'Yamin',
+//     description: 'Crazy shoe',    
+//     initialPrice: 3000.0,
+//     createdAt: DateTime(2022, 1, 23),
+//     mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
+//     images: <String>[
+//       'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
+//     ],
+//     isAvailable: true
+//   ),
+//   Product(
+//     id: '1',
+//     name: 'Puma Insidiator',
+//     seller: 'Yamin',
+//     description: 'Amazing shoe',    
+//     initialPrice: 3000.0,
+//     createdAt: DateTime(2022, 1, 21),
+//     mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
+//     images: <String>[
+//       'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
+//     ],
+//     isAvailable: true
+//   ),
+//   Product(
+//     id: '0',
+//     name: 'Nike Radion',
+//     seller: 'Yamin',
+//     description: 'Crazy shoe',    
+//     initialPrice: 3000.0,
+//     createdAt: DateTime(2022, 1, 23),
+//     mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
+//     images: <String>[
+//       'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
+//     ],
+//     isAvailable: true
+//   ),
+//   Product(
+//     id: '1',
+//     name: 'Puma Insidiator',
+//     seller: 'Yamin',
+//     description: 'Amazing shoe',    
+//     initialPrice: 3000.0,
+//     createdAt: DateTime(2022, 1, 21),
+//     mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
+//     images: <String>[
+//       'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
+//     ],
+//     isAvailable: true
+//   ),
+//   Product(
+//     id: '0',
+//     name: 'Nike Radion',
+//     seller: 'Yamin',
+//     description: 'Crazy shoe',    
+//     initialPrice: 3000.0,
+//     createdAt: DateTime(2022, 1, 23),
+//     mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
+//     images: <String>[
+//       'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
+//     ],
+//     isAvailable: true
+//   ),
+//   Product(
+//     id: '1',
+//     name: 'Puma Insidiator',
+//     seller: 'Yamin',
+//     description: 'Amazing shoe',    
+//     initialPrice: 3000.0,
+//     createdAt: DateTime(2022, 1, 21),
+//     mainImage: 'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png',
+//     images: <String>[
+//       'https://nzjzbovrzkimbccsxptb.supabase.co/storage/v1/object/public/default-bucket/shoe.png'
+//     ],
+//     isAvailable: true
+//   )
+// ];
