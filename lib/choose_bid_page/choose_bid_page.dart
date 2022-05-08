@@ -1,6 +1,6 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
-import 'package:chiraag_shoe_app/choose_bid_page/final_acceptance_dialog.dart';
-import 'package:chiraag_shoe_app/widgets/loading_indicator.dart';
+import 'final_acceptance_dialog.dart';
+import '../widgets/loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
 
@@ -91,12 +91,66 @@ class _ChooseBidPageState extends State<ChooseBidPage> {
   Widget _buildListTile(final Bid bid) {
     return ListTile(
       title: Text('Rs.${bid.amount}'),
-      subtitle: Text(bid.bidder),
+      subtitle: Text(bid.bidder.username),
       onTap: () async {
-        bool? accepted = await showDialog(context: context, builder: (context) => const FinalAcceptanceDialog());
+        bool? accepted = await showDialog(context: context, builder: (context) => FinalAcceptanceDialog(bid));
         if(accepted == null)
           return;
+
+        if(!accepted) {
+          ScaffoldMessenger.of(context).showSnackBar(_buildNotAcceptedMessageSnackBar(bid));
+          return; 
+        }
+      
+        await _bidServices.acceptBid(bid.bidder.id, bid.productId);
+
+        ScaffoldMessenger.of(context).showSnackBar(_buildAcceptedMessageSnackBar(bid));
+        Navigator.of(context).pop();
       }
+    );
+  }
+
+  SnackBar _buildNotAcceptedMessageSnackBar(final Bid bid) {
+    final ThemeData theme = Theme.of(context);
+
+    return SnackBar(
+      content: RichText(
+        text: TextSpan(
+          text: 'Bid of Rs ',
+          style: theme.textTheme.bodyMedium,
+          children: <TextSpan>[
+            TextSpan(text: ' ${bid.amount}'),
+
+            const TextSpan(text: ' by'),
+
+            TextSpan(text: ' ${bid.bidder.username}'),
+
+            const TextSpan(text: ' has not been accepted')
+          ]
+        )
+      )
+    );
+  }
+
+  SnackBar _buildAcceptedMessageSnackBar(final Bid bid) {
+    final ThemeData theme = Theme.of(context);
+
+    return SnackBar(
+      content: RichText(
+        text: TextSpan(
+          text: 'Bid of Rs ',
+          style: theme.textTheme.bodyMedium,
+          children: <TextSpan>[
+            TextSpan(text: ' ${bid.amount}'),
+
+            const TextSpan(text: ' by'),
+
+            TextSpan(text: ' ${bid.bidder.username}'),
+
+            const TextSpan(text: ' has been accepted')
+          ]
+        )
+      )
     );
   }
 

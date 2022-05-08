@@ -1,31 +1,46 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:chiraag_shoe_app/checkout_page/enter_delivery_details_page.dart';
+import 'package:chiraag_shoe_app/injector.dart';
 
+import '../widgets/loading_indicator.dart';
 import 'checkout_page_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CheckoutPage extends StatefulWidget {
-  const CheckoutPage(this.order, { Key? key }) : super(key: key);
+  const CheckoutPage({ Key? key, required this.product }) : super(key: key);
 
   @override
   State<CheckoutPage> createState() => _CheckoutPageState();
 
 
-  final Order order;
+  final Product product;
 }
 
 class _CheckoutPageState extends State<CheckoutPage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<CheckoutPageController>(
-      create: (context) => CheckoutPageController(widget.order, context: context),
-      child: Navigator(
-        onGenerateRoute: (settings) {
-          return MaterialPageRoute(builder: (context) => const EnterDeliveryDetailsPage());
-        },
-        initialRoute: 'Enter Address Page'
-      )
+      create: (context) {        
+        return CheckoutPageController(widget.product.id, context: context)..initialize();
+      },
+      child: Scaffold(body: _buildMain())
+    );
+  }
+
+  Widget _buildMain() {    
+    return Consumer<CheckoutPageController>(
+      builder: (context, value, child) {
+        if(value.isLoading)
+          return const LoadingIndicator();
+
+        return Navigator(
+          onGenerateRoute: (settings) {
+            return MaterialPageRoute(builder: (context) => const EnterDeliveryDetailsPage());
+          },
+          initialRoute: 'Enter Address Page'
+        );
+      }
     );
   }
 }

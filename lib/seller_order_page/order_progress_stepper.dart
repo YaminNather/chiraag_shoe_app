@@ -1,5 +1,4 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
-import 'package:chiraag_shoe_app/checkout_page/checkout_page.dart';
 import 'package:flutter/material.dart';
 
 class OrderProgressStepper extends StatefulWidget {
@@ -13,13 +12,6 @@ class OrderProgressStepper extends StatefulWidget {
 
 class _OrderProgressStepperState extends State<OrderProgressStepper> {
   @override
-  void initState() {    
-    super.initState();
-
-    _currentlyExpandedStep = widget.order.status.index;
-  }
-
-  @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
@@ -29,17 +21,7 @@ class _OrderProgressStepperState extends State<OrderProgressStepper> {
       steps: <Step>[
         _buildStep(index: 0, title: const Text('Verifying')),
         
-        _buildStep(
-          index: 1, 
-          title: const Text('Verified'), 
-          content: ElevatedButton(
-            child: const Text('Checkout'), 
-            onPressed: () async {
-              final MaterialPageRoute route = MaterialPageRoute(builder: (context) => CheckoutPage(product: widget.order.product));
-              await Navigator.of(context).push(route);
-            }
-          )
-        ),
+        _buildStep(index: 1, title: const Text('Confirming Payment')),
 
         _buildStep(
           index: 2,
@@ -75,7 +57,5 @@ class _OrderProgressStepperState extends State<OrderProgressStepper> {
     );
   }
 
-
-
-  int _currentlyExpandedStep = 0;
+  int _currentlyExpandedStep = 0;  
 }

@@ -24,7 +24,8 @@ class _SummaryPageState extends State<SummaryPage> {
     final ThemeData theme = Theme.of(context);
     
     final CheckoutPageController controller = Provider.of<CheckoutPageController>(context, listen: false);
-    
+    final Order order = controller.order!;
+
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +38,7 @@ class _SummaryPageState extends State<SummaryPage> {
               children: <Widget>[
                 SizedBox(
                   height: 256.0,
-                  child: ImagesCarousel(product: controller.order.product)
+                  child: ImagesCarousel(product: order.product)
                 ),
 
                 const SizedBox(height: 32.0),
@@ -51,7 +52,7 @@ class _SummaryPageState extends State<SummaryPage> {
                       SizedBox(
                         height: 40.0,
                         child: Marquee(
-                          text: controller.order.product.name.toUpperCase(),
+                          text: order.product.name.toUpperCase(),
                           style: theme.textTheme.headline5,
                           pauseAfterRound: const Duration(milliseconds: 5000)
                         ),
@@ -61,11 +62,11 @@ class _SummaryPageState extends State<SummaryPage> {
 
                       const SizedBox(height: 16.0),
 
-                      Text(controller.order.product.description),
+                      Text(order.product.description),
 
                       const SizedBox(height: 32.0),
 
-                      _buildAddressArea(controller.order)
+                      _buildAddressArea(order)
                     ]
                   ),
                 ),
@@ -78,7 +79,7 @@ class _SummaryPageState extends State<SummaryPage> {
 
         const SizedBox(height: 16.0),
 
-        _buildBottomArea(controller.order)
+        _buildBottomArea(order)
       ]
     );
   }  
