@@ -1,4 +1,10 @@
-import 'package:chiraag_shoe_app/product_page/images_carousel/images_carousel.dart';
+import 'package:chiraag_shoe_app/checkout_page/checkout_page.dart';
+import 'package:chiraag_shoe_app/product_page/sell_dialog.dart';
+
+import '../widgets/loading_indicator.dart';
+import 'bid_dialog.dart';
+
+import 'images_carousel/images_carousel.dart';
 import 'package:flutter/material.dart';
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:marquee/marquee.dart';
@@ -18,22 +24,9 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   @override
   void initState() {
-    super.initState();
+    super.initState();    
 
-    Future<void> asyncPart() async {
-      final Product product = (await _client.inventory().getProduct(widget.id))!;
-      final List<Bid> bids = await _bidServices().getBidsForProduct(product.id);
-      
-      setState(
-        () {
-          _product = product;
-          _bids = bids;
-          _isLoading = false;
-        }
-      );
-    }
-
-    asyncPart();    
+    _loadData();
   }
 
   @override
@@ -49,7 +42,7 @@ class _ProductPageState extends State<ProductPage> {
     final ThemeData theme = Theme.of(context);
 
     if(_isLoading)
-      return const Center( child: CircularProgressIndicator.adaptive() );
+      return const LoadingIndicator();
     
     final Product product = _product!;
 
@@ -72,20 +65,22 @@ class _ProductPageState extends State<ProductPage> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      SizedBox(
-                        height: 40.0,
-                        child: Marquee(
-                          text: product.name.toUpperCase(),
-                          style: theme.textTheme.headline5,
-                          pauseAfterRound: const Duration(milliseconds: 5000)
-                        )
+                      _buildProductName(theme),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          _buildPriceDetails(theme),
+
+                          _buildSizeInfo()
+                        ]
                       ),
 
-                      _buildSizeInfo(),
+                      _buildSoldByDetails(theme),
 
-                      const SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),                      
 
-                      Text(product.description)
+                      _buildDescription()
                     ]
                   ),
                 ),
@@ -101,10 +96,25 @@ class _ProductPageState extends State<ProductPage> {
         _buildBottomArea()
       ]
     );
-  }  
+  }
+
+  Widget _buildProductName(final ThemeData theme) {
+    final Product product = _product!;
+
+    return SizedBox(
+      height: 40.0,
+      child: Marquee(
+        text: product.name.toUpperCase(),
+        style: theme.textTheme.headline5,
+        pauseAfterRound: const Duration(milliseconds: 5000)
+      )
+    );
+  }
 
   Widget _buildSizeInfo() {
     final ThemeData theme = Theme.of(context);
+
+    final Product product = _product!;
 
     return RichText(
       text: TextSpan(
@@ -115,63 +125,116 @@ class _ProductPageState extends State<ProductPage> {
         ]
       )
     );
-  }    
+  }
 
-  Widget _buildBottomArea() {
-    final ThemeData theme = Theme.of(context);
-    
-    return Stack(
-      children: <Widget>[
-        _buildBottomLayerInactiveOverlay(          
-          enabled: !_product!.isAvailable,
-          child: SizedBox(
-            width: double.infinity,
-            child: DecoratedBox(
-              decoration: new BoxDecoration(
-                border: Border.all(color: theme.colorScheme.onSurface.withOpacity(0.2)),
-                borderRadius: BorderRadius.circular(16.0)
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    _buildAmountField(),
-                    
-                    const SizedBox(height: 32.0),
+  Widget _buildPriceDetails(ThemeData theme) {
+    final Product product = _product!;
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        _buildBidButton(),
-                        
-                        _buildSellButton()
-                      ]
-                    )
-                  ]
-                )
-              )
-            )
-          )
-        ),
+    return Text('Rs ${product.initialPrice}', style: theme.textTheme.headline6!.copyWith(color: theme.colorScheme.primary));
+  }
 
-        if(!_product!.isAvailable)
-          Positioned.fill(
-            child: Center(child: Text('Not available for bidding!!', style: theme.textTheme.headline5))
-          )
-      ]
+  Widget _buildSoldByDetails(final ThemeData theme) {
+    final Product product = _product!;
+
+    return RichText(
+      text: TextSpan(
+        text: 'Sold by:',
+        style: theme.textTheme.bodyText2,
+        children: <TextSpan>[
+          TextSpan(text: ' ${product.seller.username}', style: theme.textTheme.headline6)
+        ]
+      )
     );
   }
 
-  Widget _buildBottomLayerInactiveOverlay({required Widget child, bool enabled = true}) {
-    return IgnorePointer(
-      ignoring: enabled,
-      child: ColorFiltered(
-        colorFilter: ColorFilter.mode((enabled) ? Colors.grey.shade700 : Colors.white, BlendMode.multiply),
-        child: child
+  Widget _buildDescription() {
+    final Product product = _product!;
+    
+    return Text(product.description);
+  }
+
+  Widget _buildBottomArea() {
+    final ThemeData theme = Theme.of(context);
+
+    final Product product = _product!;
+
+    if(product.seller.id == _currentUser)
+      return const SizedBox.shrink();
+
+    final Widget content;
+    if(product.isAvailable)
+      content = _buildPendingProductActions(theme);
+    else
+      content = _buildAcceptedProductActions();
+    
+    return Container(
+      width: double.infinity,
+      decoration: new BoxDecoration(
+        border: Border.all(color: theme.colorScheme.onSurface.withOpacity(0.2)),
+        borderRadius: BorderRadius.circular(16.0)
       ),
+      padding: const EdgeInsets.all(16.0),
+      child: content
     );
+  }
+
+  Widget _buildPendingProductActions(final ThemeData theme) {
+    final Bid? bidByUser = _bidByUser;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        if(bidByUser != null)
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              RichText(
+                text: TextSpan(
+                  text: 'Current Bid: ',
+                  style: theme.textTheme.bodyMedium,
+                  children: <TextSpan>[
+                    TextSpan(text: ' Rs ${bidByUser.amount}', style: theme.textTheme.headline6!.copyWith(color: theme.colorScheme.primary))
+                  ]
+                )
+              ),
+
+              const SizedBox(height: 16.0)
+            ]
+          ),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            _buildBidButton(),
+            
+            _buildSellButton()
+          ]
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAcceptedProductActions() {
+    return const Center(child: Text('Bidding not available at the moment for this product'));
+
+    // final ThemeData theme = Theme.of(context);
+    
+    // final Product product = _product!;
+
+    // Future<void> onPressed() async {
+    //   final MaterialPageRoute route = MaterialPageRoute(builder: (context) => CheckoutPage(product: product));
+    //   Navigator.of(context).pushReplacement(route);
+    // }
+
+    // return SizedBox(
+    //   width: 160.0, height: 64.0,
+    //   child: ElevatedButton(
+    //     style: ButtonStyle(backgroundColor: MaterialStateProperty.all(theme.colorScheme.primary)),
+    //     child: Text('Checkout', style: theme.textTheme.headline6!.copyWith(color: theme.colorScheme.onPrimary)),
+    //     onPressed: onPressed
+    //   )
+    // );
   }
 
   Widget _buildBidButton() {
@@ -180,96 +243,87 @@ class _ProductPageState extends State<ProductPage> {
     final Product product = _product!;
 
     Future<void> onPressed() async {
-      await _bidServices().placeBid(product.id, double.parse(_amountFieldController.text));
-      await _getBidsFromBackend();
+      final bool? bidDone = await showDialog(context: context, builder: (context) => BidDialog(product));      
+      if(bidDone == null || bidDone == false)
+        return;
+      
+      await _loadData();
+
+      // await _bidServices().placeBid(product.id, double.parse(_amountFieldController.text));
+      // await _getBidsFromBackend();
     }
 
     return SizedBox(
       width: 160.0, height: 64.0,
       child: ElevatedButton(
         style: ButtonStyle(backgroundColor: MaterialStateProperty.all(theme.colorScheme.primary)),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text('Bid', style: theme.textTheme.headline6!.copyWith(color: theme.colorScheme.onPrimary)),
-
-            const SizedBox(height: 8.0),
-
-            Text('> Rs. ${_getLargestBidAmount()}', style: TextStyle(color: theme.colorScheme.onPrimary))
-          ]
-        ),
-        onPressed: (_getAmountFieldValue() > _getLargestBidAmount()) ? onPressed : null
+        child: Text('Bid', style: theme.textTheme.headline6!.copyWith(color: theme.colorScheme.onPrimary)),
+        onPressed: onPressed
       )
     );
   }
 
   Widget _buildSellButton() {
     final ThemeData theme = Theme.of(context);
-
-    final Product product = _product!;
-
     Future<void> onPressed() async {
-      setState(() => _isLoading = true);
-      final Product createdProduct = await _inventory().sellBid(_product!.id, _getAmountFieldValue());
+      final Product? soldProduct = await showDialog(context: context, builder: (context) => SellDialog(_product!));
+      if(soldProduct == null)
+        return;
 
-      MaterialPageRoute route = MaterialPageRoute(builder: (context) => ProductPage(id: createdProduct.id));
+      final MaterialPageRoute route = MaterialPageRoute(builder: (context) => ProductPage(id: soldProduct.id));
       Navigator.of(context).pushReplacement(route);
-      setState(() => _isLoading = false);
+      // setState(() => _isLoading = true);
+      // final Product createdProduct = await _inventory().sellBid(_product!.id, _getAmountFieldValue());
+
+      // MaterialPageRoute route = MaterialPageRoute(builder: (context) => ProductPage(id: createdProduct.id));
+      // Navigator.of(context).pushReplacement(route);
+      // setState(() => _isLoading = false);
     }
 
     return SizedBox(
       width: 160.0, height: 64.0,
       child: ElevatedButton(
         style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.black)),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text('Sell', style: theme.textTheme.headline6!.copyWith(color: theme.colorScheme.onPrimary)),
-
-            const SizedBox(height: 8.0),
-
-            Text('< Rs. ${product.initialPrice}')
-          ],
-        ),
-        onPressed: (_getAmountFieldValue() < product.initialPrice) ? onPressed : null
+        child: Text('Sell', style: theme.textTheme.headline6!.copyWith(color: theme.colorScheme.onPrimary)),
+        onPressed: onPressed
       )
-    );
-  }
-
-  Widget _buildAmountField() {
-    return TextField(
-      controller: _amountFieldController,
-      decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'Amount'),
-      keyboardType: TextInputType.number,
-      onChanged: (text) => setState(() {})
     );
   }
 
   Future<void> _getBidsFromBackend() async {
     List<Bid> bids = await _bidServices().getBidsForProduct(_product!.id);
     setState(() => _bids = bids);
-  }
+  }  
 
-  double _getAmountFieldValue() {
-    if(_amountFieldController.text.isNotEmpty)
-      return double.parse(_amountFieldController.text);
-    else
-      return 0.0;
-  }
+  Future<void> _loadData() async {
+      setState(() => _isLoading = true);
 
-  double _getLargestBidAmount() => (_bids!.isEmpty) ? _product!.initialPrice : _bids!.last.amount;
+      final Product product = (await _client.inventory().getProduct(widget.id))!;
+      final List<Bid> bids = await _bidServices().getBidsForProduct(product.id);
+      final String currentUser = (await _authentication.getCurrentUser())!;
+
+      setState(
+        () {
+          _product = product;
+          _bids = bids;
+          int bidByUserIndex = bids.indexWhere((bid) => bid.bidder.id == currentUser);
+          _bidByUser = (bidByUserIndex != -1) ? bids[bidByUserIndex] : null;
+          _currentUser = currentUser;
+          _isLoading = false;          
+        }
+      );
+    }
 
   BidServices _bidServices() => _client.bidServices();
-
-  Inventory _inventory() => _client.inventory();
-
 
 
   bool _isLoading = true;
 
   Product? _product;
   List<Bid>? _bids;
+  Bid? _bidByUser;
+  String? _currentUser;
   
   final Client _client = getIt<Client>();
-  final TextEditingController _amountFieldController = TextEditingController();  
+  final Authentication _authentication = getIt<Client>().authentication();  
 }

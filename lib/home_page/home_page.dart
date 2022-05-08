@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import '../current_bids_page/bids_page.dart';
 import '../orders_page/orders_page.dart';
+import '../widgets/loading_indicator.dart';
 import '../your_items_page/your_items_page.dart';
 import '../injector.dart';
 import '../widgets/carousel/carousel_controller.dart';
@@ -29,12 +30,14 @@ class _HomePageState extends State<HomePage> {
         _inventory.getLatestArrivals(),
         _bidServices.getBidsOfUser()
       ];
-      final List<dynamic> tasksResults = await Future.wait(getTasks);    
+      final List<dynamic> tasksResults = await Future.wait(getTasks);
+      final List<BidWithProduct> bids = tasksResults[1];
+      bids.removeWhere((element) => element.status != BidStatus.pending);
 
       setState(
         () {
           _latestArrivals = tasksResults[0];
-          _bids = tasksResults[1];
+          _bids = bids;
           _isLoading = false;
         }
       );
@@ -63,14 +66,13 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildBody() {
     if(_isLoading)
-      return const Center(child: CircularProgressIndicator());
+      return const LoadingIndicator();
 
-    final List<Product> latestArrivals = _latestArrivals!;
-    final List<BidWithProduct> bids = _bids!;
+    final List<Product> latestArrivals = _latestArrivals!;    
 
     final ThemeData theme = Theme.of(context);
     final MediaQueryData mediaQuery = MediaQuery.of(context);
-    final Size screenSize = mediaQuery.size;    
+    final Size screenSize = mediaQuery.size;
 
     return SingleChildScrollView(
       child: Padding(
@@ -137,33 +139,43 @@ class _HomePageState extends State<HomePage> {
 
             // const SizedBox(height: 16.0),
 
-            SizedBox(
-              height: 272.0,
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                scrollDirection: Axis.horizontal,
-                itemCount: bids.length,
-                itemBuilder: (context, index) {
-                  final Product product = bids[index].product;
-
-                  return SizedBox(
-                    width: screenSize.width / 2,
-                    child: CompactProductCard(
-                      product,
-                      onTap: () {
-                        final Widget page = ProductPage(id: product.id);
-                        final MaterialPageRoute route = MaterialPageRoute(builder: (context) => page);
-                        Navigator.of(context).push(route);
-                      }
-                    )
-                  );
-                },
-                separatorBuilder: (context, index) => const SizedBox(width: 4.0)
-              )
-            )
+            _buildCurrentBids(screenSize)
           ]
         )
       )
+    );
+  }
+
+  Widget _buildCurrentBids(final Size screenSize) {
+    final List<BidWithProduct> bids = _bids!;
+
+    if(bids.isEmpty) {
+      return Container(height: 64.0, alignment: Alignment.center, child: const Text('Nothing to show here'));
+    }
+
+    return SizedBox(
+      height: 272.0,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        scrollDirection: Axis.horizontal,
+        itemCount: bids.length,
+        itemBuilder: (context, index) {
+          final Product product = bids[index].product;
+
+          return SizedBox(
+            width: screenSize.width / 2,
+            child: CompactProductCard(
+              product,
+              onTap: () {
+                final Widget page = ProductPage(id: product.id);
+                final MaterialPageRoute route = MaterialPageRoute(builder: (context) => page);
+                Navigator.of(context).push(route);
+              }
+            )
+          );
+        },
+        separatorBuilder: (context, index) => const SizedBox(width: 4.0)
+      ),
     );
   }
 

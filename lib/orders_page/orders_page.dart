@@ -4,6 +4,7 @@ import 'package:chiraag_shoe_app/injector.dart';
 import 'package:flutter/material.dart';
 
 import '../order_page/order_page.dart';
+import '../widgets/loading_indicator.dart';
 
 class OrdersPage extends StatefulWidget {
   const OrdersPage({ Key? key }) : super(key: key);
@@ -30,11 +31,14 @@ class _OrdersPageState extends State<OrdersPage> {
   }
 
   Widget _buildBody() {
+    return const LoadingIndicator();
     if(_isLoading)
-      return const Center(child: CircularProgressIndicator());
+      return const LoadingIndicator();
 
     final List<Order> orders = _orders!;
 
+    if(orders.isEmpty)
+      return const Center(child: Text('No orders yet'));
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -66,14 +70,7 @@ class _OrdersPageState extends State<OrdersPage> {
   Widget _buildVerifiedItem(final Order order) {
     return _buildItem(
       order,
-      status: const Text('Verified'),
-      trailing: ElevatedButton(
-        child: const Text('Checkout'),
-        onPressed: () async {          
-          MaterialPageRoute route = MaterialPageRoute(builder: (context) => CheckoutPage(order));
-          await Navigator.of(context).push(route);
-        }
-      )
+      status: const Text('Verified, click here to checkout')      
     );
   }
 

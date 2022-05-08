@@ -98,11 +98,11 @@ class _ChooseBidPageState extends State<ChooseBidPage> {
           return;
 
         if(!accepted) {
-          ScaffoldMessenger.of(context).showSnackBar(_buildNotAcceptedMessageSnackBar(bid));         
+          ScaffoldMessenger.of(context).showSnackBar(_buildNotAcceptedMessageSnackBar(bid));
           return; 
         }
       
-        await _bidServices.acceptBid(bid);
+        await _bidServices.acceptBid(bid.bidder.id, bid.productId);
 
         ScaffoldMessenger.of(context).showSnackBar(_buildAcceptedMessageSnackBar(bid));
         Navigator.of(context).pop();

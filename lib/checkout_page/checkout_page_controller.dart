@@ -1,10 +1,20 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
+import 'package:chiraag_shoe_app/injector.dart';
 import 'package:chiraag_shoe_app/order_page/order_page.dart';
 import 'complete_checkout.dart';
 import 'package:flutter/material.dart';
 
 class CheckoutPageController extends ChangeNotifier {
-  CheckoutPageController(this.order, {required this.context});
+  CheckoutPageController(this.product, {required this.context});
+
+  Future<void> initialize() async {
+    isLoading = true;
+    notifyListeners();
+
+    order = await _orderServices.getOrderForProduct(product);    
+    isLoading = false;
+    notifyListeners();
+  }
 
   void goBack() {
     Navigator.of(context).pop();
@@ -17,6 +27,7 @@ class CheckoutPageController extends ChangeNotifier {
   }
 
   Future<void> confirmButtonOnClicked(final BuildContext pageContext) async {
+    final Order order = this.order!;
     final CompleteCheckout completeCheckout = new CompleteCheckout(order, address!, contactNumber!);
     try {
       await completeCheckout.completeCheckout();
@@ -47,8 +58,12 @@ class CheckoutPageController extends ChangeNotifier {
   Address? _address;
   String? _contactNumber;
 
+  final String product;
+  Order? order;
 
-  final Order order;
+  bool isLoading = true;
+
+  final OrderServices _orderServices = getIt<Client>().orderServices();
 
   final BuildContext context;
 }

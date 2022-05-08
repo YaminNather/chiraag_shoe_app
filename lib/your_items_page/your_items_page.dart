@@ -4,6 +4,7 @@ import 'package:chiraag_shoe_app/your_items_page/your_items_page_controller.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/loading_indicator.dart';
 import 'accepted_items_tab_view.dart';
 import 'added_items_tab_view.dart';
 
@@ -15,16 +16,21 @@ class YourItemsPage extends StatefulWidget {
 }
 
 class _YourItemsPageState extends State<YourItemsPage> {
-   @override
-  void initState() {    
+  @override
+  void initState() {
     super.initState();
 
-    _controller.loadData();
+    _controller = YourItemsPageController();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: Scaffold(appBar: _buildAppBar(), body: _buildBody()));    
+    return SafeArea(
+      child: ChangeNotifierProvider<YourItemsPageController>(
+        create: (context) => _controller..loadData(),
+        child: Scaffold(appBar: _buildAppBar(), body: _buildBody())
+      )
+    );
   }
 
   PreferredSizeWidget _buildAppBar() {
@@ -34,35 +40,36 @@ class _YourItemsPageState extends State<YourItemsPage> {
   Widget _buildBody() {
     final ThemeData theme = Theme.of(context);
 
-    return Provider(
-      create: (context) => _controller,
-      child: DefaultTabController(
-        length: 3,
-        child: Column(
-          children: <Widget>[
-            TabBar(
-              labelColor: theme.textTheme.bodyText1!.color,
-              tabs: const <Tab>[
-                Tab(text: 'Added'),
-                
-                Tab(text: 'Bidding'),
-                
-                Tab(text: 'Accepted')
-              ]
-            ),
+    return Consumer<YourItemsPageController>(
+      builder: (context, value, child) {
+        return DefaultTabController(
+          length: 3,
+          child: Column(
+            children: <Widget>[
+              TabBar(
+                labelColor: theme.textTheme.bodyText1!.color,
+                tabs: const <Tab>[
+                  Tab(text: 'Added'),
+                  
+                  Tab(text: 'Bidding'),
+                  
+                  Tab(text: 'Accepted')
+                ]
+              ),
 
-            Expanded(
-              child: _buildTabBarView()
-            )
-          ]
-        )
-      ),
+              Expanded(
+                child: _buildTabBarView()
+              )
+            ]
+          )
+        );
+      }      
     );
   }
 
   Widget _buildTabBarView() {
     if(_controller.isLoading)
-      return const Center(child: CircularProgressIndicator());
+      return const LoadingIndicator();
 
     return TabBarView(
       children: <Widget>[              
@@ -105,5 +112,5 @@ class _YourItemsPageState extends State<YourItemsPage> {
 
 
 
-  final YourItemsPageController _controller = YourItemsPageController();
+  late final YourItemsPageController _controller;
 }

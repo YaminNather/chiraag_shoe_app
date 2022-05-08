@@ -3,6 +3,8 @@ import 'package:chiraag_shoe_app/injector.dart';
 import 'package:chiraag_shoe_app/product_page/product_page.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/loading_indicator.dart';
+
 class BidsPage extends StatefulWidget {
   const BidsPage({ Key? key }) : super(key: key);
 
@@ -40,7 +42,7 @@ class _BidsPageState extends State<BidsPage> {
 
   Widget _buildBody() {
     if(_isLoading)
-      return const Center(child: CircularProgressIndicator());
+      return const LoadingIndicator();
 
     final List<BidWithProduct> bids = _bids!;
 
