@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../product_page/product_page.dart';
 import '../widgets/compact_product_card/compact_product_card.dart';
+import '../widgets/loading_indicator.dart';
 
 class ProductSearchPage extends StatefulWidget {
   const ProductSearchPage({ Key? key }) : super(key: key);
@@ -41,7 +42,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
 
   Widget _buildBody() {
     if(_isLoading)
-      return const Center(child: CircularProgressIndicator.adaptive());
+      return const LoadingIndicator();
 
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),

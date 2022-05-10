@@ -31,7 +31,6 @@ class _OrdersPageState extends State<OrdersPage> {
   }
 
   Widget _buildBody() {
-    return const LoadingIndicator();
     if(_isLoading)
       return const LoadingIndicator();
 

@@ -30,17 +30,17 @@ class _LoadingIndicatorState extends State<LoadingIndicator> {
 
         const SizedBox(height: 32.0),
 
-        TweenAnimationBuilder<double>(
-          tween: Tween<double>(begin: 0.0, end: 1.0),
-          duration: const Duration(milliseconds: 1000),
-          curve: Curves.easeInOut,
-          builder: (context, value, child) {
-            return Transform.scale(
-              scale: value,
-              child: Text('Some Random Loading Quote', style: theme.textTheme.headline6)
-            );
-          }          
-        )
+        // TweenAnimationBuilder<double>(
+        //   tween: Tween<double>(begin: 0.0, end: 1.0),
+        //   duration: const Duration(milliseconds: 1000),
+        //   curve: Curves.easeInOut,
+        //   builder: (context, value, child) {
+        //     return Transform.scale(
+        //       scale: value,
+        //       child: Text('Some Random Loading Quote', style: theme.textTheme.headline6)
+        //     );
+        //   }
+        // )
       ]
     );
     // return const LoadingIndicator();
@@ -50,7 +50,7 @@ class _LoadingIndicatorState extends State<LoadingIndicator> {
 
 
   static const List<String> _loadingIndicatorFiles = <String>[
-    'roller_skates_loading_indicator',
+    // 'roller_skates_loading_indicator',
     'walking_shoes_loading_indicator'
   ];
 }

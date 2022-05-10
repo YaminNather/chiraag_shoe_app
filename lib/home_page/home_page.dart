@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../add_product_page/add_product_page.dart';
 import '../product_page/product_page.dart';
 import '../widgets/carousel/carousel.dart';
@@ -214,6 +216,14 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 MaterialPageRoute route = MaterialPageRoute(builder: (context) => const AddProductPage());
                 Navigator.of(context).push(route);
+              }
+            ),
+
+            ListTile(
+              title: const Text('Make as first time'),
+              onTap: () async {
+                final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                sharedPreferences.remove('first_launch');
               }
             )
           ]

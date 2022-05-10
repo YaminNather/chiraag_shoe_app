@@ -527,6 +527,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  onboarding:
+    dependency: "direct main"
+    description:
+      name: onboarding
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
   package_config:
     dependency: transitive
     description:
@@ -661,7 +668,7 @@ packages:
     source: hosted
     version: "0.1.15"
   shared_preferences:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: shared_preferences
       url: "https://pub.dartlang.org"

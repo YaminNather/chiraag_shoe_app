@@ -4,6 +4,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
 import '../injector.dart';
+import '../widgets/loading_indicator.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({ Key? key }) : super(key: key);
@@ -24,7 +25,7 @@ class _SignUpPageState extends State<SignUpPage> {
     final ThemeData theme = Theme.of(context);
 
     if(_isLoading)
-      return const Center(child: CircularProgressIndicator.adaptive());
+      return const LoadingIndicator();
 
     return SingleChildScrollView(
       child: Padding(
