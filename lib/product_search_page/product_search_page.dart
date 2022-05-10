@@ -21,8 +21,7 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
     Future<void> asyncPart() async {
       setState(() => _isLoading = true);
 
-      final List<Product> allProducts = await _inventory.getAllProducts();
-      _allProducts = allProducts;
+      await _getProducts();
       _searchSuggestions = _allProducts;
       
       setState(() => _isLoading = false);
@@ -50,7 +49,17 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: _buildSearchField()
+            child: Column(              
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[                
+                _buildSearchField(),
+
+                const SizedBox(height: 16.0),
+
+                _buildSortOrderDropdownField()
+              ]
+            )
           ),
 
           Expanded(
@@ -96,11 +105,48 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
         suffixIcon: Icon(Icons.search),
         border: OutlineInputBorder()
       ),
-      onChanged: (text) => _updateSearch(text)
+      onChanged: (text) => _updateSearch()
     );
   }
 
-  Future<void> _updateSearch(final String searchTerm) async {
+  Widget _buildSortOrderDropdownField() {
+    final List<DropdownMenuItem<SortOrder>> items = <DropdownMenuItem<SortOrder>>[
+      const DropdownMenuItem<SortOrder>(value: null, child: Text(''))
+    ];
+    items.addAll(
+      SortOrder.values.map<DropdownMenuItem<SortOrder>>(
+        (element) => DropdownMenuItem<SortOrder>(value: element, child: Text(element.name))
+      ).toList()
+    );
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        const Text('Sort by date'),
+
+        const SizedBox(width: 16.0),
+
+        DropdownButton<SortOrder>(
+          items: items,
+          value: _sortOrder,
+          onChanged: (value) {
+            setState(() => _sortOrder = value);
+            _getProducts().then((value) => _getProducts());
+          }
+        ),
+      ],
+    );
+  }
+
+  Future<void> _getProducts() async {
+    final List<Product> allProducts = await _inventory.getAllProducts(sortOrder: _sortOrder);
+    _allProducts = allProducts;
+    _updateSearch();      
+  }
+
+  Future<void> _updateSearch() async {
+    final String searchTerm = _searchFieldController.text;
+
     final List<Product> allProducts = _allProducts!;
     final List<Product> searchSuggestions = <Product>[];
     for(final Product product in allProducts) {
@@ -109,13 +155,13 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
     }
 
     setState(() => _searchSuggestions = searchSuggestions);
-  }  
-
+  }
 
 
   bool _isLoading = true;
   List<Product>? _allProducts;
-  List<Product>? _searchSuggestions;
+  SortOrder? _sortOrder;
+  List<Product>? _searchSuggestions;  
 
   final TextEditingController _searchFieldController = TextEditingController();
 
