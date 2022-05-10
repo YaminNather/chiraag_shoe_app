@@ -1,13 +1,55 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 class CarouselController extends ChangeNotifier {
   CarouselController() {
     pageController.addListener(notifyListeners);
-  }  
+  }
+
+  void updateWidgetData(final int pageCount) {
+    this.pageCount = pageCount;
+  }
 
   int getCurrentPage() {
     try {
-      return pageController.page!.round();
+      return pageController.page!.floor();
+    }
+    catch(e) {
+      return 0;
+    }
+  }
+
+  double pageOffset() {
+    try {
+      return pageController.page!;
+    }
+    catch(e) {
+      return 0;
+    }
+  }
+
+  double getScrollOffsetOfPage(final int page) {
+    if(pageCount == 0)
+      return 0;
+      
+    final double pageOffsetFactor = page / (pageCount - 1);
+
+    return maxScrollOffset() * pageOffsetFactor;
+  }
+
+  double scrollOffset() {
+    try {
+      return pageController.offset;
+    }
+    catch(e) {
+      return 0;
+    }
+  }
+
+  double maxScrollOffset() {
+    try {
+      return pageController.position.maxScrollExtent;
     }
     catch(e) {
       return 0;
@@ -20,7 +62,7 @@ class CarouselController extends ChangeNotifier {
       Duration duration = const Duration(milliseconds: 500),
       Curve curve = Curves.easeInOut
     }
-  ) async {        
+  ) async {
     await pageController.animateToPage(index, duration: duration, curve: curve);
   }
 
@@ -32,6 +74,6 @@ class CarouselController extends ChangeNotifier {
   }
 
 
-
+  int pageCount = 0;
   final PageController pageController = PageController();
 }

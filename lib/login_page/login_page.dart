@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../home_page/home_page.dart';
 import '../injector.dart';
+import '../widgets/loading_indicator.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({ Key? key }) : super(key: key);
@@ -25,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
     final ThemeData theme = Theme.of(context);
 
     if(_isLoading)
-      return const Center(child: CircularProgressIndicator.adaptive());
+      return const LoadingIndicator();
 
     return SingleChildScrollView(
       child: Padding(

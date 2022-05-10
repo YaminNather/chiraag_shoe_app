@@ -11,7 +11,7 @@ class Carousel extends StatefulWidget {
       children: children
     );
 
-    return Carousel._(controller: controller, physics: physics, pageView: pageView);
+    return Carousel._(controller: controller, physics: physics, pageView: pageView, pageCount: children.length);
   }
 
   factory Carousel.builder({CarouselController? controller, ScrollPhysics? physics, required int itemCount, required Widget Function(BuildContext context, int index) itemBuilder}) {
@@ -24,15 +24,16 @@ class Carousel extends StatefulWidget {
       itemBuilder: itemBuilder
     );
 
-    return Carousel._(controller: controller, physics: physics, pageView: pageView);
+    return Carousel._(controller: controller, physics: physics, pageView: pageView, pageCount: itemCount);
   }
 
-  const Carousel._({ 
+  const Carousel._({
     Key? key,
     this.controller,
     this.physics,
-    required this.pageView
-  }) : super(key: key);  
+    required this.pageView,
+    required this.pageCount
+  }) : super(key: key);
 
   @override
   State<Carousel> createState() => _CarouselState();
@@ -41,6 +42,7 @@ class Carousel extends StatefulWidget {
   final CarouselController? controller;
   final ScrollPhysics? physics;
   final Widget pageView;
+  final int pageCount;
 }
 
 class _CarouselState extends State<Carousel> {
@@ -56,16 +58,12 @@ class _CarouselState extends State<Carousel> {
 
   @override
   Widget build(BuildContext context) {
+    controller.updateWidgetData(widget.pageCount);
+
     if(widget.controller != null && widget.controller != controller)
       controller = widget.controller!;
 
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: widget.pageView
-        )
-      ]
-    );
+    return widget.pageView;
   }
 
 

@@ -1,6 +1,7 @@
 import 'package:chiraag_app_backend_client/chiraag_app_backend_client.dart';
 import 'package:flutter/material.dart';
 import '../injector.dart';
+import '../widgets/loading_indicator.dart';
 import 'product_card.dart';
 
 class ProductsPage extends StatefulWidget {
@@ -13,14 +14,10 @@ class ProductsPage extends StatefulWidget {
 class _ProductsPageState extends State<ProductsPage> {
   @override
   void initState() {
-    super.initState();
-    print("ENTERED HERE");
+    super.initState();    
 
     _client.inventory().getAllProducts().then(
-      (value) {
-        print("HERE");
-        setState( () => _products = value );
-      }
+      (value) => setState( () => _products = value )
     );
   }
 
@@ -46,9 +43,7 @@ class _ProductsPageState extends State<ProductsPage> {
   Widget _buildBody() {
     final List<Product>? products = _products;
     if(products == null) {
-      return const Center(
-        child: CircularProgressIndicator.adaptive()
-      );
+      return const LoadingIndicator();
     }    
 
     return Padding(
