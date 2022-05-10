@@ -26,7 +26,7 @@ class _SellDialogState extends State<SellDialog> {
     final ThemeData theme = Theme.of(context);
 
     return AlertDialog(
-      title: const Text('Sell'),
+      title: const Text('Sell Product'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[

@@ -103,8 +103,9 @@ class _ProductPageState extends State<ProductPage> {
 
     return SizedBox(
       height: 40.0,
-      child: Marquee(
+      child: Marquee(        
         text: product.name.toUpperCase(),
+        startPadding: 128.0,
         style: theme.textTheme.headline5,
         pauseAfterRound: const Duration(milliseconds: 5000)
       )

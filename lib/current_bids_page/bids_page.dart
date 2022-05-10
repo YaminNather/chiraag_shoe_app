@@ -85,7 +85,8 @@ class _BidsPageState extends State<BidsPage> {
       bid,
       bidStatus: RichText(
         text: TextSpan(
-          text: 'Current Bid: ', 
+          text: 'Current Bid: ',
+          style: theme.textTheme.bodyMedium,
           children: <TextSpan>[
             TextSpan(text: 'Rs ${bid.amount}', style: theme.textTheme.headline6!.copyWith(color: Colors.green))
           ]
