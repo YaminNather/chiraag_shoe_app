@@ -1,3 +1,4 @@
+import 'package:chiraag_shoe_app/login_or_authentication_redirector/login_or_authentication_redirector.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../add_product_page/add_product_page.dart';
@@ -220,6 +221,16 @@ class _HomePageState extends State<HomePage> {
             ),
 
             ListTile(
+              title: const Text('Logout'),
+              onTap: () async {
+                await _authentication.logout();
+
+                final MaterialPageRoute route = MaterialPageRoute(builder: (context) => const LoginOrAuthenticationRedirector());
+                Navigator.of(context).pushReplacement(route);
+              }
+            ),
+
+            ListTile(
               title: const Text('Make as first time'),
               onTap: () async {
                 final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -238,6 +249,7 @@ class _HomePageState extends State<HomePage> {
   List<Product>? _latestArrivals;
   List<BidWithProduct>? _bids;
 
+  final Authentication _authentication = getIt<Client>().authentication();
   final Inventory _inventory = getIt<Client>().inventory();
   final BidServices _bidServices = getIt<Client>().bidServices();
 
