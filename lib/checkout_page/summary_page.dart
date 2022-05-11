@@ -37,7 +37,7 @@ class _SummaryPageState extends State<SummaryPage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 SizedBox(
-                  height: 256.0,
+                  height: 320.0,
                   child: ImagesCarousel(product: order.product)
                 ),
 
