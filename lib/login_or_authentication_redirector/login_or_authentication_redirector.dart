@@ -28,7 +28,7 @@ class _LoginOrAuthenticationRedirectorState extends State<LoginOrAuthenticationR
         page = const LoggedInPage();
 
       final MaterialPageRoute route = MaterialPageRoute(builder: (context) => page);
-      Navigator.of(context).push(route);
+      Navigator.of(context).pushReplacement(route);
     }
 
     asyncPart();
