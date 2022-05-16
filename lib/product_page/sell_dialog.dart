@@ -82,7 +82,7 @@ class _SellDialogState extends State<SellDialog> {
     return SnackBar(
       content: RichText(
         text: TextSpan(
-          text: 'Placed bid of Rs.',
+          text: 'Sell Bid done',
           style: theme.textTheme.bodyMedium,
           children: <TextSpan>[
             TextSpan(text: ' $amount', style: const TextStyle(fontWeight: FontWeight.bold))
