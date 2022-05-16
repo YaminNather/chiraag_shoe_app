@@ -72,7 +72,7 @@ class _BidDialogState extends State<BidDialog> {
 
       ScaffoldMessenger.of(context).showSnackBar(_buildBidPlacedNotifierSnackBar(amount));
 
-      Navigator.of(context).pop();
+      Navigator.of(context).pop<bool>(true);
     }
 
     return ElevatedButton(

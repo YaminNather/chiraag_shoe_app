@@ -79,9 +79,9 @@ class _ProductSearchPageState extends State<ProductSearchPage> {
         final Product product = searchSuggestions[index];
         return CompactProductCard(
           searchSuggestions[index],
-          onTap: () {
+          onTap: () async {
             MaterialPageRoute route = MaterialPageRoute(builder: (context) => ProductPage(id: product.id));
-            Navigator.of(context).push(route);
+            await Navigator.of(context).push(route);
           }
         );
       }      

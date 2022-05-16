@@ -63,11 +63,11 @@ class _SellDialogState extends State<SellDialog> {
         return;
       }      
 
-      await _inventory.sellBid(widget.product.id, amount);
+      final Product product = await _inventory.sellBid(widget.product.id, amount);
 
       ScaffoldMessenger.of(context).showSnackBar(_buildBidPlacedNotifierSnackBar(amount));
 
-      Navigator.of(context).pop();
+      Navigator.of(context).pop<Product>(product);
     }
 
     return ElevatedButton(

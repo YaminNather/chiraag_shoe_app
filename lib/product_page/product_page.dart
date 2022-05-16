@@ -272,7 +272,7 @@ class _ProductPageState extends State<ProductPage> {
         return;
 
       final MaterialPageRoute route = MaterialPageRoute(builder: (context) => ProductPage(id: soldProduct.id));
-      Navigator.of(context).pushReplacement(route);
+      await Navigator.of(context).pushReplacement(route);
       // setState(() => _isLoading = true);
       // final Product createdProduct = await _inventory().sellBid(_product!.id, _getAmountFieldValue());
 
